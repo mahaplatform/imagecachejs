@@ -1,228 +1,354 @@
 
 import fs from 'fs'
 import path from 'path'
+import _ from 'lodash'
+import express from 'express'
 import Promise from 'bluebird'
+import request from 'request'
 import Jimp from 'jimp'
 import { digest } from 'json-hash'
 
-export default (req, res, next) => {
+export default (userOptions) => {
 
-  const hash = digest({ path: req.path, query: req.query })
-
-  const cachedPath = path.resolve('public','imagecache',`${hash}.jpg`)
-
-  if(fs.existsSync(cachedPath)) {
-    return res.sendFile(cachedPath)
+  const options = {
+    cacheDir: 'cached',
+    sources: [],
+    ...userOptions
   }
 
-  const parts = req.path.split('/').slice(2)
+  const imagecache = (req, res, next) => {
 
-  const filepath = path.join(...parts.slice(0, parts.length - 1))
+    return cache(req.path, req.query).then(path => {
 
-  const filename = parts[parts.length - 1]
-
-  const url = `http://localhost:3000/${filepath}/${filename}`
-
-  return process(url, cachedPath, req.query).then(() => {
-
-    res.sendFile(cachedPath)
-
-  }).catch(err => {
-
-    res.json({ err })
-
-  })
-
-}
-
-const process = (url, filepath, params) => {
-
-  return new Promise((resolve, reject) => {
-
-    Jimp.read(url).then(image => {
-
-      return (params.op) ? Promise.reduce(params.op, (image, op) => transform(image, op), image) : transform(image, params)
-
-    }).then(image => {
-
-      return image.write(filepath, () => resolve())
+      res.sendFile(path)
 
     }).catch(err => {
 
-      console.log(err)
-
-      reject()
+      res.status(404).send(err)
 
     })
 
-  })
-
-}
-
-const transform = (image, params) => {
-
-  return Promise.resolve(image).then(image => {
-
-    return (params.bri) ? brightness(image, params.bri) : image
-
-  }).then(image => {
-
-    return (params.con) ? brightness(image, params.con) : image
-
-  }).then(image => {
-
-    return (params.flip) ? flip(image, params.con) : image
-
-  }).then(image => {
-
-    return (params.col) ? colorize(image, params.col) : image
-
-  }).then(image => {
-
-    return (params.blur) ? blur(image, params.blur) : image
-
-  }).then(image => {
-
-    return (params.rot) ? rotate(image, params.rot) : image
-
-  }).then(image => {
-
-    return (params.crop) ? crop(image, params.crop) : image
-
-  }).then(image => {
-
-    return (params.fit || params.w || params.h) ? resize(image, params.fit, params.w, params.h, params.dpi) : image
-
-  })
-
-}
-
-const brightness = (image, bri) => {
-
-  return image.brightness(parseFloat(bri) / 100)
-
-}
-
-const contrast = (image, con) => {
-
-  return image.contrast(parseFloat(con) / 100)
-
-}
-
-const flip = (image, flip) => {
-
-  const horz = flip.match(/h/) !== null
-
-  const vert = flip.match(/v/) !== null
-
-  return image.flip(horz, vert)
-
-}
-
-const colorize = (image, effect) => {
-
-  if(effect == 'greyscale') {
-    return image.greyscale()
-  } else if(effect == 'sepia') {
-    return image.sepia()
-  } else {
-    return image
   }
 
-}
+  const cache = (urlpath, query) => {
 
-const blur = (image, blur) => {
+    return new Promise((resolve, reject) => {
 
-  return image.blur(parseInt(blur))
+      const hash = digest({ urlpath, query})
 
-}
+      const cachedPath = path.resolve(options.cacheDir, `${hash}.jpg`)
 
-const rotate = (image, rot) => {
+      if(fs.existsSync(cachedPath)) return resolve(cachedPath)
 
-  const degrees = parseInt(rot)
+      const parts = urlpath.split('/').slice(2)
 
-  const ow = image.bitmap.width
+      const filepath = path.join(...parts.slice(0, parts.length - 1))
 
-  const oh = image.bitmap.height
+      const filename = parts[parts.length - 1]
 
-  const angle = degrees * (Math.PI / 180)
+      return getUrl(`${filepath}/${filename}`).then(url => {
 
-  const quadrant = Math.floor(angle / (Math.PI / 2)) & 3
+        return process(url, cachedPath, query)
 
-  const sign_alpha = (quadrant & 1) === 0 ? angle : Math.PI - angle
+      }).then(() => {
 
-  const alpha = (sign_alpha % Math.PI + Math.PI) % Math.PI;
+        return resolve(cachedPath)
 
-  const bb = {
-    w: ow * Math.cos(alpha) + oh * Math.sin(alpha),
-    h: ow * Math.sin(alpha) + oh * Math.cos(alpha)
+      }).catch(err => {
+
+        return reject(err)
+
+      })
+
+    })
+
   }
 
+  const getUrl = (urlpath) => {
 
-  const gamma = ow < oh ? Math.atan2(bb.w, bb.h) : Math.atan2(bb.h, bb.w)
+    return new Promise((resolve, reject) => {
 
-  const delta = Math.PI - alpha - gamma
+      Promise.reduce(options.sources, (found, host) => {
 
-  const length = ow < oh ? oh : ow
+        if(found !== null) return found
 
-  const d = length * Math.cos(alpha)
+        return testUrl(`${host}/${urlpath}`)
 
-  const a = d * Math.sin(alpha) / Math.sin(delta)
+      }, null).then(url => {
 
-  const y = a * Math.cos(gamma)
+        if(!url) return reject('Not Found')
 
-  const x = y * Math.tan(gamma)
+        resolve(url)
 
-  const w = bb.w - 2 * x
+      })
 
-  const h = bb.h - 2 * y
+    })
 
-  return image.rotate(degrees).crop(x, y, w, h)
-
-}
-
-const crop = (image, crop) => {
-
-  if(!crop.match(/\d*,\d*,\d*,\d*/)) {
-    return image
   }
 
-  const [ x, y, w, h ] = crop.split(',')
+  const testUrl = (url) => {
 
-  return image.crop(parseInt(x), parseInt(y), parseInt(w), parseInt(h))
+    return new Promise((resolve, reject) => {
 
-}
+      request(url, function (error, response, body) {
 
-const resize = (image, fit, w, h, dpi = 1) => {
+        if(response && response.statusCode && response.statusCode == 200) {
+          return resolve(url)
+        }
 
-  if(fit && w && h) {
+        resolve(null)
 
-    if(fit == 'contain') {
+      })
 
-      return image.contain(scaleLength(w, dpi), scaleLength(h, dpi))
+    })
 
-    } else if(fit == 'cover') {
+  }
 
-      return image.cover(scaleLength(w, dpi), scaleLength(h, dpi))
+  const process = (url, filepath, params) => {
+
+    return new Promise((resolve, reject) => {
+
+      Jimp.read(url).then(image => {
+
+        return (params.op) ? Promise.reduce(params.op, (image, op) => transform(image, op), image) : transform(image, params)
+
+      }).then(image => {
+
+        return image.write(filepath, () => resolve(filepath))
+
+      }).catch(err => {
+
+        console.log(err)
+
+        reject()
+
+      })
+
+    })
+
+  }
+
+  const transform = (image, params) => {
+
+    return Promise.resolve(image).then(image => {
+
+      return (params.bri) ? brightness(image, params.bri) : image
+
+    }).then(image => {
+
+      return (params.con) ? brightness(image, params.con) : image
+
+    }).then(image => {
+
+      return (params.flip) ? flip(image, params.flip) : image
+
+    }).then(image => {
+
+      return (params.col) ? colorize(image, params.col) : image
+
+    }).then(image => {
+
+      return (params.blur) ? blur(image, params.blur) : image
+
+    }).then(image => {
+
+      return (params.rot) ? rotate(image, params.rot) : image
+
+    }).then(image => {
+
+      return (params.crop) ? crop(image, params.crop) : image
+
+    }).then(image => {
+
+      return (params.fit || params.w || params.h) ? resize(image, params.fit, params.w, params.h, params.ha, params.va, params.dpi) : image
+
+    })
+
+  }
+
+  const brightness = (image, value) => {
+
+    if(value < -100 || value > 100) return image
+
+    const delta = parseFloat(value) / 100
+
+    return image.brightness(delta)
+
+  }
+
+  const contrast = (image, value) => {
+
+    if(value < -100 || value > 100) return image
+
+    const delta = parseFloat(value) / 100
+
+    return image.contrast(delta)
+
+  }
+
+  const flip = (image, value) => {
+
+    if(value.match(/^[vh]{1,2}$/) === null) return image
+
+    const horz = value.match(/h/) !== null
+
+    const vert = value.match(/v/) !== null
+
+    return image.flip(horz, vert)
+
+  }
+
+  const colorize = (image, value) => {
+
+    if(value == 'greyscale') {
+
+      return image.greyscale()
+
+    } else if(value == 'sepia') {
+
+      return image.sepia()
+
+    } else {
+
+      return image
 
     }
 
-  } else if(w && !h) {
+  }
 
-    return image.resize(scaleLength(w, dpi), Jimp.AUTO)
+  const blur = (image, value) => {
 
-  } else if(h && !w) {
+    if(radius < 1 || radius > 100) return image
 
-    return image.resize(Jimp.AUTO, scaleLength(h, dpi))
+    const radius = parseInt(value)
 
-  } else if(h && w) {
-
-    return image.resize(scaleLength(w, dpi), scaleLength(h, dpi))
+    return image.blur(radius)
 
   }
 
-}
+  const rotate = (image, value) => {
 
-const scaleLength = (length, dpi) => {
-  return parseInt(length) * parseFloat(dpi)
+    if(value < 1 || value > 359) return image
+
+    const degrees = parseInt(value)
+
+    const ow = image.bitmap.width
+
+    const oh = image.bitmap.height
+
+    const angle = degrees * (Math.PI / 180)
+
+    const quadrant = Math.floor(angle / (Math.PI / 2)) & 3
+
+    const sign_alpha = (quadrant & 1) === 0 ? angle : Math.PI - angle
+
+    const alpha = (sign_alpha % Math.PI + Math.PI) % Math.PI;
+
+    const bb = {
+      w: ow * Math.cos(alpha) + oh * Math.sin(alpha),
+      h: ow * Math.sin(alpha) + oh * Math.cos(alpha)
+    }
+
+    const gamma = ow < oh ? Math.atan2(bb.w, bb.h) : Math.atan2(bb.h, bb.w)
+
+    const delta = Math.PI - alpha - gamma
+
+    const length = ow < oh ? oh : ow
+
+    const d = length * Math.cos(alpha)
+
+    const a = d * Math.sin(alpha) / Math.sin(delta)
+
+    const y = a * Math.cos(gamma)
+
+    const x = y * Math.tan(gamma)
+
+    const w = bb.w - 2 * x
+
+    const h = bb.h - 2 * y
+
+    return image.rotate(degrees).crop(x, y, w, h)
+
+  }
+
+  const crop = (image, value) => {
+
+    if(!value.match(/\d*,\d*,\d*,\d*/)) return image
+
+    const [ x, y, w, h ] = value.split(',')
+
+    return image.crop(parseInt(x), parseInt(y), parseInt(w), parseInt(h))
+
+  }
+
+  const resize = (image, fit, w, h, ha = 'center', va = 'middle', dpi = 1) => {
+
+    if(fit === undefined) {
+
+      if(h && w) {
+
+        return image.resize(scaleLength(w, dpi), scaleLength(h, dpi))
+
+      } else if(w) {
+
+        return image.resize(scaleLength(w, dpi), Jimp.AUTO)
+
+      } else if(h) {
+
+        return image.resize(Jimp.AUTO, scaleLength(h, dpi))
+
+      }
+
+    } else {
+
+      if(fit === 'contain' && w && h) {
+
+        return image.contain(scaleLength(w, dpi), scaleLength(h, dpi), hmode(ha) | vmode(va))
+
+      } else if(fit === 'cover' && w && h) {
+
+        return image.cover(scaleLength(w, dpi), scaleLength(h, dpi), hmode(ha) | vmode(va))
+
+      }
+
+    }
+
+    return image
+
+  }
+
+  const hmode = (value) => {
+    if(value == 'left') {
+      return Jimp.HORIZONTAL_ALIGN_LEFT
+    } else if(value == 'center') {
+      return Jimp.HORIZONTAL_ALIGN_CENTER
+    } else if(value == 'right') {
+      return Jimp.HORIZONTAL_ALIGN_RIGHT
+    }
+  }
+
+  const vmode = (value) => {
+    if(value == 'top') {
+      return Jimp.VERTICAL_ALIGN_TOP
+    } else if(value == 'middle') {
+      return Jimp.VERTICAL_ALIGN_MIDDLE
+    } else if(value == 'bottom') {
+      return Jimp.VERTICAL_ALIGN_BOTTOM
+    }
+  }
+
+  const scaleLength = (length, dpi) => {
+
+    return parseInt(length) * parseFloat(dpi)
+
+  }
+
+  const router = new express.Router()
+
+  router.get('/imagecache*', express.static('public/imagecache'))
+
+  router.get('/imagecache*', imagecache)
+
+  return router
+
 }

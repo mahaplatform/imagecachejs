@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "babel-node ./server.js",
-    "clear": "rm -rf ./public/imagecache/*"
+    "clear": "rm -rf ./cached/*"
   },
   "engines": {
     "node": ">= 6.5.0",
@@ -17,7 +17,9 @@
     "bluebird": "^3.5.0",
     "express": "^4.15.2",
     "jimp": "^0.2.27",
-    "json-hash": "^1.2.0"
+    "json-hash": "^1.2.0",
+    "lodash": "^4.17.4",
+    "request": "^2.81.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.0",
