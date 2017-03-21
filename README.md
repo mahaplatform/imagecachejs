@@ -3,6 +3,26 @@
 Imagecache is a express middleware that lets you manipulate images and then
 cache them for quick retrieval.
 
+## Usage
+It's easy to just add imagecache to your application
+
+```JavaScript
+import express from 'express'
+import imagecache from './imagecache'
+
+const app = express()
+
+app.use(express.static('public'))
+
+app.use(imagecache({
+  destination: 'cached',
+  sources: ['http://localhost:3000']
+}))
+
+app.listen(3000, function () {
+  console.log('Example app listening on port 3000!')
+})
+```
 ## Brightness
 Increase or decrease the brightness
 
