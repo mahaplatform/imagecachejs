@@ -1,4 +1,5 @@
 import express from 'express'
+import path from 'path'
 import imagecache from './imagecache'
 
 const app = express()
@@ -6,7 +7,8 @@ const app = express()
 app.use(express.static('public'))
 
 app.use(imagecache({
-  sources: ['https://sitemandala.imgix.net','http://localhost:3000']
+  destination: path.resolve(__dirname, 'cached'),
+  sources: ['http://localhost:3000']
 }))
 
 app.listen(3000, function () {

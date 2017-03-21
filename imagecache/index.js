@@ -11,7 +11,7 @@ import { digest } from 'json-hash'
 export default (userOptions) => {
 
   const options = {
-    cacheDir: 'cached',
+    destination: 'cached',
     sources: [],
     ...userOptions
   }
@@ -36,7 +36,7 @@ export default (userOptions) => {
 
       const hash = digest({ urlpath, query})
 
-      const cachedPath = path.resolve(options.cacheDir, `${hash}.jpg`)
+      const cachedPath = path.resolve(options.destination, `${hash}.jpg`)
 
       if(fs.existsSync(cachedPath)) return resolve(cachedPath)
 
