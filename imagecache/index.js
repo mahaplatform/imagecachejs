@@ -136,7 +136,7 @@ export default (userOptions) => {
 
     }).then(image => {
 
-      return (params.con) ? brightness(image, params.con) : image
+      return (params.con) ? contrast(image, params.con) : image
 
     }).then(image => {
 
