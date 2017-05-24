@@ -62,9 +62,20 @@ Increase or decrease the brightness
 ## Flip
 Flip the image horizontally, vertically, or both
 
-http://localhost:3000/imagecache/images/kitten.jpg?flip=h
-http://localhost:3000/imagecache/images/kitten.jpg?flip=v
-http://localhost:3000/imagecache/images/kitten.jpg?flip=vh
+<table>
+  <tr><td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-flip-h.jpg" /></td></tr>
+  <tr><td>http://localhost:3000/imagecache/images/kitten.jpg?flip=h</td></tr>
+</table>
+
+<table>
+  <tr><td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-flip-v.jpg" /></td></tr>
+  <tr><td>http://localhost:3000/imagecache/images/kitten.jpg?flip=v</td></tr>
+</table>
+
+<table>
+  <tr><td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-flip-vh.jpg" /></td></tr>
+  <tr><td>http://localhost:3000/imagecache/images/kitten.jpg?flip=vh</td></tr>
+</table>
 
 ## Colorize
 Colorize image with a preset
