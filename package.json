@@ -2,11 +2,24 @@
   "name": "imagecachejs",
   "version": "0.0.10",
   "description": "",
+  "license": "ISC",
+  "author": "Greg Kops <greg@thinktopography.com>",
+  "maintainers": [
+    {
+      "name": "Greg Kops",
+      "email": "greg@thinktopography.com"
+    }
+  ],
   "main": "dist/index.js",
   "scripts": {
     "build": "rm -rf ./dist && babel ./src --out-dir ./dist",
     "test": "NODE_ENV=test mocha --recursive --require babel-core/register ./src/test.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mahaplatform/imagecachejs.git"
+  },
+  "homepage": "https://github.com/mahaplatform/imagecachejs#readme",
   "author": "",
   "license": "ISC",
   "dependencies": {

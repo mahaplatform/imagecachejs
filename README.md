@@ -1,6 +1,6 @@
-# imagecache.js
+# imagecachejs
 
-Imagecache is a express middleware that lets you manipulate images and then
+Imagecache is an express middleware that lets you manipulate images and then
 cache them for quick retrieval.
 
 ## Installation

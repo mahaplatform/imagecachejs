@@ -136,9 +136,9 @@ export default (userOptions) => {
 
     if(params.rot) image = rotate(image, params.rot)
 
-    if(params.crop) image = crop(image, params.crop)
-
     if(params.fit || params.w || params.h) image = resize(image, params.fit, params.w, params.h, params.ha, params.va, params.dpi)
+
+    if(params.crop) image = crop(image, params.crop)
 
     return image
 
