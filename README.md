@@ -161,6 +161,77 @@ Draw an x pixel thick border around the image
   <tr><td colspan="2">http://localhost:3000/imagecache/images/kitten.png?border=50,red</td></tr>
 </table>
 
+## Hue
+Rotate the hue of an image with a value between -360 and 360 degrees
+
+<table>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.png" width="300" /></td>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-hue-90.png" height="200" /></td>
+  </tr>
+  <tr><td colspan="2">http://localhost:3000/imagecache/images/kitten.png?hue=90</td></tr>
+</table>
+
+<table>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.png" width="300" /></td>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-hue--90.png" height="200" /></td>
+  </tr>
+  <tr><td colspan="2">http://localhost:3000/imagecache/images/kitten.png?hue=-90</td></tr>
+</table>
+
+## Saturation
+Increase or decrease the saturation of an image with an amount between -100% and 100%
+
+<table>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.png" width="300" /></td>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-sat-50.png" height="200" /></td>
+  </tr>
+  <tr><td colspan="2">http://localhost:3000/imagecache/images/kitten.png?sat=50</td></tr>
+</table>
+
+<table>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.png" width="300" /></td>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-sat--50.png" height="200" /></td>
+  </tr>
+  <tr><td colspan="2">http://localhost:3000/imagecache/images/kitten.png?sat=-50</td></tr>
+</table>
+
+## Tint
+Tint the image with a layer of white with a opacity value between 1 and 100
+
+<table>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.png" width="300" /></td>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-tint-50.png" height="200" /></td>
+  </tr>
+  <tr><td colspan="2">http://localhost:3000/imagecache/images/kitten.png?tint=50</td></tr>
+</table>
+
+## Shade
+Shade the image with a layer of black with a opacity value between 1 and 100
+
+<table>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.png" width="300" /></td>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-shade-50.png" height="200" /></td>
+  </tr>
+  <tr><td colspan="2">http://localhost:3000/imagecache/images/kitten.png?shade=50</td></tr>
+</table>
+
+## Invert
+Invert the colors of the image
+
+<table>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.png" width="300" /></td>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-invert.png" height="200" /></td>
+  </tr>
+  <tr><td colspan="2">http://localhost:3000/imagecache/images/kitten.png?invert=true</td></tr>
+</table>
+
 ## Crop
 Crop the image using a reactangle in the format "x,y,w,h"
 
