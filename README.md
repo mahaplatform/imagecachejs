@@ -37,26 +37,38 @@ app.listen(8080, function () {
 ## Brightness
 Increase or decrease the brightness
 <table>
-  <tr><td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-bri-50.jpg" /></td></tr>
-  <tr><td>http://localhost:3000/imagecache/images/kitten.jpg?bri=50</td></tr>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.jpg" /></td>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-bri-50.jpg" /></td>
+  </tr>
+  <tr><td colspan="2">http://localhost:3000/imagecache/images/kitten.jpg?bri=50</td></tr>
 </table>
 
 <table>
-  <tr><td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-bri-30.jpg" /></td></tr>
-  <tr><td>http://localhost:3000/imagecache/images/kitten.jpg?bri=-30</td></tr>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.jpg" /></td>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-bri-30.jpg" /></td>
+  </tr>
+  <tr><td colspan="2">http://localhost:3000/imagecache/images/kitten.jpg?bri=-30</td></tr>
 </table>
 
 ## Contrast
 Increase or decrease the brightness
 
 <table>
-  <tr><td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-con-50.jpg" /></td></tr>
-  <tr><td>http://localhost:3000/imagecache/images/kitten.jpg?con=50</td></tr>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.jpg" /></td>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-con-50.jpg" /></td>
+  </tr>
+  <tr><td colspan="2">http://localhost:3000/imagecache/images/kitten.jpg?con=50</td></tr>
 </table>
 
 <table>
-  <tr><td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-con-30.jpg" /></td></tr>
-  <tr><td>http://localhost:3000/imagecache/images/kitten.jpg?con=-30</td></tr>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.jpg" /></td>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-con-30.jpg" /></td>
+  </tr>
+  <tr><td colspan="2">http://localhost:3000/imagecache/images/kitten.jpg?con=-30</td></tr>
 </table>
 
 ## Flip
@@ -71,13 +83,19 @@ Flip the image horizontally, vertically, or both
 </table>
 
 <table>
-  <tr><td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-flip-v.jpg" /></td></tr>
-  <tr><td>http://localhost:3000/imagecache/images/kitten.jpg?flip=v</td></tr>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.jpg" /></td>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-flip-v.jpg" /></td>
+  </tr>
+  <tr><td colspan="2">http://localhost:3000/imagecache/images/kitten.jpg?flip=v</td></tr>
 </table>
 
 <table>
-  <tr><td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-flip-vh.jpg" /></td></tr>
-  <tr><td>http://localhost:3000/imagecache/images/kitten.jpg?flip=vh</td></tr>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.jpg" /></td>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-flip-vh.jpg" /></td>
+  </tr>
+  <tr><td colspan="2">http://localhost:3000/imagecache/images/kitten.jpg?flip=vh</td></tr>
 </table>
 
 ## Colorize
