@@ -47,9 +47,9 @@ Increase or decrease the brightness
 <table>
   <tr>
     <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.jpg" width="300" /></td>
-    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-bri-30.jpg" width="300" /></td>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-bri--50.jpg" width="300" /></td>
   </tr>
-  <tr><td colspan="2">http://localhost:3000/imagecache/images/kitten.jpg?bri=-30</td></tr>
+  <tr><td colspan="2">http://localhost:3000/imagecache/images/kitten.jpg?bri=-50</td></tr>
 </table>
 
 ## Contrast
@@ -66,9 +66,9 @@ Increase or decrease the brightness
 <table>
   <tr>
     <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.jpg" width="300" /></td>
-    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-con-30.jpg" width="300" /></td>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-con--50.jpg" width="300" /></td>
   </tr>
-  <tr><td colspan="2">http://localhost:3000/imagecache/images/kitten.jpg?con=-30</td></tr>
+  <tr><td colspan="2">http://localhost:3000/imagecache/images/kitten.jpg?con=-50</td></tr>
 </table>
 
 ## Flip
