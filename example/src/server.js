@@ -1,14 +1,15 @@
+import path from 'path'
 import express from 'express'
-import imagecache from 'imagecache'
+import imagecache from 'imagecachejs'
 
 const app = express()
 
-app.use(express.static('public'))
+app.use(express.static('./public'))
 
-app.use(imagecache({
-  destination: 'cached',
+app.use('/imagecache', imagecache({
+  destination: path.resolve('cached'),
   sources: [
-    'http://localhost:3000'
+    'http://localhost:8080'
   ]
 }))
 
