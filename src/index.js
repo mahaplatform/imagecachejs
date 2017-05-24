@@ -162,7 +162,7 @@ export default (userOptions) => {
 
     if(params.sat) image = saturation(image, params.sat)
 
-    if(params.mix) image = mix(image, params.mix)
+    if(params.tint) image = tint(image, params.tint)
 
     if(params.invert) image = invert(image, params.invert)
 
@@ -293,7 +293,7 @@ export default (userOptions) => {
 
   }
 
-  const mix = (image, value) => {
+  const tint = (image, value) => {
 
     const matches = value.match(/(\w*),(\d*)/)
 
@@ -305,8 +305,7 @@ export default (userOptions) => {
 
     const alpha = (parseInt(mixValue * 2.56) - 1).toString(16)
 
-
-    const hex8 = parseInt(tinycolor(tinycolor(hexValue).toHexString()+alpha).toHex8(), 16)
+    const hex8 = parseInt(tinycolor(tinycolor(hexValue).toHexString() + alpha).toHex8(), 16)
 
     const veil = new Jimp(image.bitmap.width, image.bitmap.height, hex8)
 
