@@ -6,6 +6,7 @@ import express from 'express'
 import { Router } from 'express'
 import Request from 'request'
 import Jimp from 'jimp'
+import tinycolor from 'tinycolor2'
 import { digest } from 'json-hash'
 
 const request = Promise.promisify(Request)
@@ -40,7 +41,9 @@ export default (userOptions) => {
 
     const hash = digest({ urlpath, query })
 
-    const cachedPath = path.resolve(options.destination, `${hash}.jpg`)
+    const ext = getFormat(query.fm)
+
+    const cachedPath = path.resolve(options.destination, `${hash}.${ext}`)
 
     if(fs.existsSync(cachedPath)) return cachedPath
 
@@ -49,6 +52,16 @@ export default (userOptions) => {
     await process(url, cachedPath, query)
 
     return cachedPath
+
+  }
+
+  const getFormat = (format) => {
+
+    if(format === 'png') return 'png'
+
+    if(format === 'bmp') return 'bmp'
+
+    return 'jpg'
 
   }
 
@@ -99,6 +112,22 @@ export default (userOptions) => {
     if(params.col) image = colorize(image, params.col)
 
     if(params.blur) image = blur(image, params.blur)
+
+    if(params.pad) image = padding(image, params.pad)
+
+    if(params.bg) image = background(image, params.bg)
+
+    if(params.border) image = border(image, params.border)
+
+    if(params.hue) image = hue(image, params.hue)
+
+    if(params.sat) image = saturation(image, params.sat)
+
+    if(params.tint) image = tint(image, params.tint)
+
+    if(params.shade) image = shade(image, params.shade)
+
+    if(params.invert) image = invert(image, params.invert)
 
     if(params.rot) image = rotate(image, params.rot)
 
@@ -154,11 +183,114 @@ export default (userOptions) => {
 
   const blur = (image, value) => {
 
-    if(radius < 1 || radius > 100) return image
-
     const radius = parseInt(value)
 
+    if(radius < 1 || radius > 100) return image
+
     return image.blur(radius)
+
+  }
+
+  const padding = (image, value) => {
+
+    const padding = parseInt(value)
+
+    if(padding < 1) return image
+
+    const img = new Jimp(image.bitmap.width + (padding * 2), image.bitmap.height + (padding * 2), 0x00000000)
+
+    return img.composite(image, padding, padding)
+
+  }
+
+  const background = (image, value) => {
+
+    const color = tinycolor(value)
+
+    if(!color.isValid()) return image
+
+    const hex = parseInt(color.toHex8(), 16)
+
+    const img = new Jimp(image.bitmap.width, image.bitmap.height, hex)
+
+    return img.composite(image, 0, 0)
+
+  }
+
+  const border = (image, value) => {
+
+    const matches = value.match(/(\d*),(\w*)/)
+
+    if(!matches) return image
+
+    const [,borderValue,hexValue] = matches
+
+    const color = tinycolor(hexValue)
+
+    const border = parseInt(borderValue)
+
+    if(!color.isValid()) return image
+
+    const hex = parseInt(color.toHex8(), 16)
+
+    const verticalBorder = new Jimp(border, image.bitmap.height, hex)
+
+    const horizontalBorder = new Jimp(image.bitmap.width - (border * 2), border, hex)
+
+    return image.composite(verticalBorder, 0, 0)
+                .composite(verticalBorder, (image.bitmap.width - border), 0)
+                .composite(horizontalBorder, border, 0)
+                .composite(horizontalBorder, border, (image.bitmap.height - border))
+
+  }
+
+  const hue = (image, value) => {
+
+    const degrees = parseInt(value)
+
+    if(degrees === 0 || degrees < -360 || degrees > 360) return image
+
+    return image.color([ { apply: 'hue', params: [ degrees ] } ])
+
+  }
+
+  const saturation = (image, value) => {
+
+    const amount = parseInt(value)
+
+    if(amount === 0 || amount < -100 || amount > 100) return image
+
+    if(amount < 0) return image.color([ { apply: 'desaturate', params: [ Math.abs(amount) ] } ])
+
+    if(amount > 0) return image.color([ { apply: 'saturate', params: [ amount ] } ])
+
+  }
+
+  const tint = (image, value) => {
+
+    const amount = parseInt(value)
+
+    if(amount < 1 || amount > 100) return image
+
+    return image.color([ { apply: 'tint', params: [ amount ] } ])
+
+  }
+
+  const shade = (image, value) => {
+
+    const amount = parseInt(value)
+
+    if(amount < 1 || amount > 100) return image
+
+    return image.color([ { apply: 'shade', params: [ amount ] } ])
+
+  }
+
+  const invert = (image, value) => {
+
+    if(value !== 'true') return image
+
+    return image.invert()
 
   }
 
@@ -178,7 +310,7 @@ export default (userOptions) => {
 
     const sign_alpha = (quadrant & 1) === 0 ? angle : Math.PI - angle
 
-    const alpha = (sign_alpha % Math.PI + Math.PI) % Math.PI;
+    const alpha = (sign_alpha % Math.PI + Math.PI) % Math.PI
 
     const bb = {
       w: ow * Math.cos(alpha) + oh * Math.sin(alpha),

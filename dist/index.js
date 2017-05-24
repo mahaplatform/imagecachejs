@@ -48,6 +48,10 @@ var _jimp = require('jimp');
 
 var _jimp2 = _interopRequireDefault(_jimp);
 
+var _tinycolor = require('tinycolor2');
+
+var _tinycolor2 = _interopRequireDefault(_tinycolor);
+
 var _jsonHash = require('json-hash');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -106,34 +110,35 @@ exports.default = function (userOptions) {
 
   var cache = function () {
     var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(urlpath, query) {
-      var hash, cachedPath, url;
+      var hash, ext, cachedPath, url;
       return _regenerator2.default.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
               hash = (0, _jsonHash.digest)({ urlpath: urlpath, query: query });
-              cachedPath = _path3.default.resolve(options.destination, hash + '.jpg');
+              ext = getFormat(query.fm);
+              cachedPath = _path3.default.resolve(options.destination, hash + '.' + ext);
 
               if (!_fs2.default.existsSync(cachedPath)) {
-                _context2.next = 4;
+                _context2.next = 5;
                 break;
               }
 
               return _context2.abrupt('return', cachedPath);
 
-            case 4:
-              _context2.next = 6;
+            case 5:
+              _context2.next = 7;
               return getUrl(urlpath);
 
-            case 6:
+            case 7:
               url = _context2.sent;
-              _context2.next = 9;
+              _context2.next = 10;
               return process(url, cachedPath, query);
 
-            case 9:
+            case 10:
               return _context2.abrupt('return', cachedPath);
 
-            case 10:
+            case 11:
             case 'end':
               return _context2.stop();
           }
@@ -145,6 +150,15 @@ exports.default = function (userOptions) {
       return _ref2.apply(this, arguments);
     };
   }();
+
+  var getFormat = function getFormat(format) {
+
+    if (format === 'png') return 'png';
+
+    if (format === 'bmp') return 'bmp';
+
+    return 'jpg';
+  };
 
   var getUrl = function () {
     var _ref3 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(urlpath) {
@@ -292,6 +306,22 @@ exports.default = function (userOptions) {
 
     if (params.blur) image = blur(image, params.blur);
 
+    if (params.pad) image = padding(image, params.pad);
+
+    if (params.bg) image = background(image, params.bg);
+
+    if (params.border) image = border(image, params.border);
+
+    if (params.hue) image = hue(image, params.hue);
+
+    if (params.sat) image = saturation(image, params.sat);
+
+    if (params.tint) image = tint(image, params.tint);
+
+    if (params.shade) image = shade(image, params.shade);
+
+    if (params.invert) image = invert(image, params.invert);
+
     if (params.rot) image = rotate(image, params.rot);
 
     if (params.crop) image = crop(image, params.crop);
@@ -341,11 +371,109 @@ exports.default = function (userOptions) {
 
   var blur = function blur(image, value) {
 
-    if (radius < 1 || radius > 100) return image;
-
     var radius = parseInt(value);
 
+    if (radius < 1 || radius > 100) return image;
+
     return image.blur(radius);
+  };
+
+  var padding = function padding(image, value) {
+
+    var padding = parseInt(value);
+
+    if (padding < 1) return image;
+
+    var img = new _jimp2.default(image.bitmap.width + padding * 2, image.bitmap.height + padding * 2, 0x00000000);
+
+    return img.composite(image, padding, padding);
+  };
+
+  var background = function background(image, value) {
+
+    var color = (0, _tinycolor2.default)(value);
+
+    if (!color.isValid()) return image;
+
+    var hex = parseInt(color.toHex8(), 16);
+
+    var img = new _jimp2.default(image.bitmap.width, image.bitmap.height, hex);
+
+    return img.composite(image, 0, 0);
+  };
+
+  var border = function border(image, value) {
+
+    console.log(value);
+
+    var matches = value.match(/(\d*),(\w*)/);
+
+    if (!matches) return image;
+
+    var _matches = (0, _slicedToArray3.default)(matches, 3),
+        borderValue = _matches[1],
+        hexValue = _matches[2];
+
+    var color = (0, _tinycolor2.default)(hexValue);
+
+    var border = parseInt(borderValue);
+
+    if (!color.isValid()) return image;
+
+    var hex = parseInt(color.toHex8(), 16);
+
+    console.log(border, hex);
+
+    var verticalBorder = new _jimp2.default(border, image.bitmap.height, hex);
+
+    var horizontalBorder = new _jimp2.default(image.bitmap.width - border * 2, border, hex);
+
+    return image.composite(verticalBorder, 0, 0).composite(verticalBorder, image.bitmap.width - border, 0).composite(horizontalBorder, border, 0).composite(horizontalBorder, border, image.bitmap.height - border);
+  };
+
+  var hue = function hue(image, value) {
+
+    var degrees = parseInt(value);
+
+    if (degrees === 0 || degrees < -360 || degrees > 360) return image;
+
+    return image.color([{ apply: 'hue', params: [degrees] }]);
+  };
+
+  var saturation = function saturation(image, value) {
+
+    var amount = parseInt(value);
+
+    if (amount === 0 || amount < -100 || amount > 100) return image;
+
+    if (amount < 0) return image.color([{ apply: 'desaturate', params: [Math.abs(amount)] }]);
+
+    if (amount > 0) return image.color([{ apply: 'saturate', params: [amount] }]);
+  };
+
+  var tint = function tint(image, value) {
+
+    var amount = parseInt(value);
+
+    if (amount < 1 || amount > 100) return image;
+
+    return image.color([{ apply: 'tint', params: [amount] }]);
+  };
+
+  var shade = function shade(image, value) {
+
+    var amount = parseInt(value);
+
+    if (amount < 1 || amount > 100) return image;
+
+    return image.color([{ apply: 'shade', params: [amount] }]);
+  };
+
+  var invert = function invert(image, value) {
+
+    if (value !== 'true') return image;
+
+    return image.invert();
   };
 
   var rotate = function rotate(image, value) {
