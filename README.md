@@ -154,6 +154,9 @@ Crop the image using a reactangle in the format "x,y,w,h"
 Resize the image
 
 http://localhost:3000/imagecache/images/kitten.jpg?w=500
+
 http://localhost:3000/imagecache/images/kitten.jpg?w=200&dpi=2
+
 http://localhost:3000/imagecache/images/kitten.jpg?h=250
+
 http://localhost:3000/imagecache/images/kitten.jpg?w=300&h=300
