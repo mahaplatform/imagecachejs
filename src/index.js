@@ -90,21 +90,21 @@ export default (userOptions) => {
 
   const transform = (image, params) => {
 
-    if(params.bri) return brightness(image, params.bri)
+    if(params.bri) image = brightness(image, params.bri)
 
-    if(params.con) return contrast(image, params.con)
+    if(params.con) image = contrast(image, params.con)
 
-    if(params.flip) return flip(image, params.flip)
+    if(params.flip) image = flip(image, params.flip)
 
-    if(params.col) return colorize(image, params.col)
+    if(params.col) image = colorize(image, params.col)
 
-    if(params.blur) return blur(image, params.blur)
+    if(params.blur) image = blur(image, params.blur)
 
-    if(params.rot) return rotate(image, params.rot)
+    if(params.rot) image = rotate(image, params.rot)
 
-    if(params.crop) return crop(image, params.crop)
+    if(params.crop) image = crop(image, params.crop)
 
-    if(params.fit || params.w || params.h) return resize(image, params.fit, params.w, params.h, params.ha, params.va, params.dpi)
+    if(params.fit || params.w || params.h) image = resize(image, params.fit, params.w, params.h, params.ha, params.va, params.dpi)
 
     return image
 

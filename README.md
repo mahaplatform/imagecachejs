@@ -14,25 +14,29 @@ npm install --save imagecachejs
 It's easy to just add imagecache to your application
 
 ```JavaScript
+import path from 'path'
 import express from 'express'
-import imagecache from './imagecachejs'
+import imagecache from 'imagecachejs'
 
 const app = express()
 
-app.use(express.static('public'))
+app.use(express.static('./public'))
 
-app.use(imagecache({
-  destination: 'cached',
-  sources: ['http://localhost:3000']
+app.use('/imagecache', imagecache({
+  destination: path.resolve('cached'),
+  sources: [
+    'http://localhost:8080'
+  ]
 }))
 
-app.listen(3000, function () {
-  console.log('Example app listening on port 3000!')
+app.listen(8080, function () {
+  console.log('Example app listening on port 8080')
 })
 ```
+
 ## Brightness
 Increase or decrease the brightness
-
+<img src="https://raw.githubusercontent.com/mahaplatform/maha-platform/master/docs/kitten-bri-50.jpg" />
 http://localhost:3000/imagecache/images/apartment.jpg?bri=50
 http://localhost:3000/imagecache/images/apartment.jpg?bri=-30
 
