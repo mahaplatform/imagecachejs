@@ -168,6 +168,8 @@ export default (userOptions) => {
 
     if(params.shade) image = shade(image, params.shade)
 
+    if(params.mix) image = mix(image, params.mix)
+
     if(params.invert) image = invert(image, params.invert)
 
     if(params.rot) image = rotate(image, params.rot)
@@ -309,21 +311,34 @@ export default (userOptions) => {
 
   const tint = (image, value) => {
 
-    const amount = parseInt(value)
-
-    if(amount < 1 || amount > 100) return image
-
-    return image.color([ { apply: 'tint', params: [ amount ] } ])
+    return mix(image, `white,${value}`)
 
   }
 
   const shade = (image, value) => {
 
-    const amount = parseInt(value)
+    return mix(image, `black,${value}`)
 
-    if(amount < 1 || amount > 100) return image
+  }
 
-    return image.color([ { apply: 'shade', params: [ amount ] } ])
+  const mix = (image, value) => {
+
+    const matches = value.match(/(\w*),(\d*)/)
+
+    if(!matches) return image
+
+    const [,hexValue,mixValue] = matches
+
+    if(mixValue < 1 || mixValue > 100) return image
+
+    const alpha = (parseInt(mixValue * 2.56) - 1).toString(16)
+
+
+    const hex8 = parseInt(tinycolor(tinycolor(hexValue).toHexString()+alpha).toHex8(), 16)
+
+    const veil = new Jimp(image.bitmap.width, image.bitmap.height, hex8)
+
+    return image.composite(veil, 0, 0)
 
   }
 

@@ -387,6 +387,8 @@ exports.default = function (userOptions) {
 
     if (params.shade) image = shade(image, params.shade);
 
+    if (params.mix) image = mix(image, params.mix);
+
     if (params.invert) image = invert(image, params.invert);
 
     if (params.rot) image = rotate(image, params.rot);
@@ -516,20 +518,33 @@ exports.default = function (userOptions) {
 
   var tint = function tint(image, value) {
 
-    var amount = parseInt(value);
-
-    if (amount < 1 || amount > 100) return image;
-
-    return image.color([{ apply: 'tint', params: [amount] }]);
+    return mix(image, 'white,' + value);
   };
 
   var shade = function shade(image, value) {
 
-    var amount = parseInt(value);
+    return mix(image, 'black,' + value);
+  };
 
-    if (amount < 1 || amount > 100) return image;
+  var mix = function mix(image, value) {
 
-    return image.color([{ apply: 'shade', params: [amount] }]);
+    var matches = value.match(/(\w*),(\d*)/);
+
+    if (!matches) return image;
+
+    var _matches2 = (0, _slicedToArray3.default)(matches, 3),
+        hexValue = _matches2[1],
+        mixValue = _matches2[2];
+
+    if (mixValue < 1 || mixValue > 100) return image;
+
+    var alpha = (parseInt(mixValue * 2.56) - 1).toString(16);
+
+    var hex8 = parseInt((0, _tinycolor2.default)((0, _tinycolor2.default)(hexValue).toHexString() + alpha).toHex8(), 16);
+
+    var veil = new _jimp2.default(image.bitmap.width, image.bitmap.height, hex8);
+
+    return image.composite(veil, 0, 0);
   };
 
   var invert = function invert(image, value) {
