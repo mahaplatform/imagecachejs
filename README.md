@@ -126,45 +126,22 @@ Increase or decrease the saturation of an image with an amount between -100% and
 </table>
 
 ## Tint
-Tint the image with a layer of white with a opacity value between 1 and 100
+Tint the image with a layer of any color with a opacity value between 1% and 100%
 
 <table>
   <tr>
     <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.png" width="300" /></td>
-    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-tint-50.png" height="200" /></td>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-tint-red-50.png" height="200" /></td>
   </tr>
-  <tr><td colspan="2">http://localhost:3000/imagecache/tint=50/images/kitten.png</td></tr>
-</table>
-
-## Shade
-Shade the image with a layer of black with a opacity value between 1 and 100
-
-<table>
-  <tr>
-    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.png" width="300" /></td>
-    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-shade-50.png" height="200" /></td>
-  </tr>
-  <tr><td colspan="2">http://localhost:3000/imagecache/shade=50/images/kitten.png</td></tr>
-</table>
-
-
-## Mix
-Tint the image with a layer of any color with a opacity value between 1 and 100
-
-<table>
-  <tr>
-    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.png" width="300" /></td>
-    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-mix-red-50.png" height="200" /></td>
-  </tr>
-  <tr><td colspan="2">http://localhost:3000/imagecache/mix=red,50/images/kitten.png</td></tr>
+  <tr><td colspan="2">http://localhost:3000/imagecache/tint=red,50/images/kitten.png</td></tr>
 </table>
 
 <table>
   <tr>
     <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.png" width="300" /></td>
-    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-mix-blue-50.png" height="200" /></td>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-tint-blue-50.png" height="200" /></td>
   </tr>
-  <tr><td colspan="2">http://localhost:3000/imagecache/mix=blue,50/images/kitten.png</td></tr>
+  <tr><td colspan="2">http://localhost:3000/imagecache/tint=blue,50/images/kitten.png</td></tr>
 </table>
 
 ## Invert

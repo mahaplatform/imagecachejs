@@ -162,10 +162,6 @@ export default (userOptions) => {
 
     if(params.sat) image = saturation(image, params.sat)
 
-    if(params.tint) image = tint(image, params.tint)
-
-    if(params.shade) image = shade(image, params.shade)
-
     if(params.mix) image = mix(image, params.mix)
 
     if(params.invert) image = invert(image, params.invert)
@@ -294,18 +290,6 @@ export default (userOptions) => {
     if(amount < 0) return image.color([ { apply: 'desaturate', params: [ Math.abs(amount) ] } ])
 
     if(amount > 0) return image.color([ { apply: 'saturate', params: [ amount ] } ])
-
-  }
-
-  const tint = (image, value) => {
-
-    return mix(image, `white,${value}`)
-
-  }
-
-  const shade = (image, value) => {
-
-    return mix(image, `black,${value}`)
 
   }
 
