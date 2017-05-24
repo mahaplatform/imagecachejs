@@ -2,10 +2,13 @@
 import fs from 'fs'
 import path from 'path'
 import _ from 'lodash'
+import express from 'express'
 import { Router } from 'express'
-import request from 'request'
+import Request from 'request'
 import Jimp from 'jimp'
 import { digest } from 'json-hash'
+
+const request = Promise.promisify(Request)
 
 export default (userOptions) => {
 
@@ -25,6 +28,8 @@ export default (userOptions) => {
 
     } catch(err) {
 
+      console.log(err)
+
       res.status(404).send(err)
 
     }
@@ -39,13 +44,7 @@ export default (userOptions) => {
 
     if(fs.existsSync(cachedPath)) return cachedPath
 
-    const parts = urlpath.split('/').slice(2)
-
-    const filepath = path.join(...parts.slice(0, parts.length - 1))
-
-    const filename = parts[parts.length - 1]
-
-    const url = await getUrl(`${filepath}/${filename}`)
+    const url = await getUrl(urlpath)
 
     await process(url, cachedPath, query)
 
@@ -59,7 +58,7 @@ export default (userOptions) => {
 
       if(found !== null) return found
 
-      return testUrl(`${host}/${urlpath}`)
+      return testUrl(host + urlpath)
 
     }, null)
 
@@ -71,19 +70,11 @@ export default (userOptions) => {
 
   const testUrl = async (url) => {
 
-    return new Promise((resolve, reject) => {
+    const response = await request(url)
 
-      request(url, function (error, response, body) {
+    if(response && response.statusCode && response.statusCode == 200) return url
 
-        if(response && response.statusCode && response.statusCode == 200) {
-          return resolve(url)
-        }
-
-        resolve(null)
-
-      })
-
-    })
+    return null
 
   }
 
@@ -91,29 +82,31 @@ export default (userOptions) => {
 
     const data = await Jimp.read(url)
 
-    const image = (params.op) ? await Promise.reduce(params.op, async (data, op) => await transform(data, op), data) : await transform(data, params)
+    const image = (params.op) ? await Promise.reduce(params.op, (data, op) => transform(data, op), data) : await transform(data, params)
 
-    return image.write(filepath, () => resolve(filepath))
+    await new Promise((resolve, reject) => image.write(filepath, () => resolve()))
 
   }
 
-  const transform = async (image, params) => {
+  const transform = (image, params) => {
 
-    if(params.bri) return await brightness(image, params.bri)
+    if(params.bri) return brightness(image, params.bri)
 
-    if(params.con) return await contrast(image, params.con)
+    if(params.con) return contrast(image, params.con)
 
-    if(params.flip) return await flip(image, params.flip)
+    if(params.flip) return flip(image, params.flip)
 
-    if(params.col) return await colorize(image, params.col)
+    if(params.col) return colorize(image, params.col)
 
-    if(params.blur) return await blur(image, params.blur)
+    if(params.blur) return blur(image, params.blur)
 
-    if(params.rot) return await rotate(image, params.rot)
+    if(params.rot) return rotate(image, params.rot)
 
-    if(params.crop) return await crop(image, params.crop)
+    if(params.crop) return crop(image, params.crop)
 
-    if(params.fit || params.w || params.h) return await resize(image, params.fit, params.w, params.h, params.ha, params.va, params.dpi)
+    if(params.fit || params.w || params.h) return resize(image, params.fit, params.w, params.h, params.ha, params.va, params.dpi)
+
+    return image
 
   }
 
@@ -226,17 +219,9 @@ export default (userOptions) => {
 
   const resize = (image, fit, w, h, ha = 'center', va = 'middle', dpi = 1) => {
 
-    if(fit === 'contain' && w && h) {
+    if(fit === 'contain' && w && h) return image.contain(scaleLength(w, dpi), scaleLength(h, dpi), hmode(ha) | vmode(va))
 
-      return image.contain(scaleLength(w, dpi), scaleLength(h, dpi), hmode(ha) | vmode(va))
-
-    }
-
-    if(fit === 'cover' && w && h) {
-
-      return image.cover(scaleLength(w, dpi), scaleLength(h, dpi), hmode(ha) | vmode(va))
-
-    }
+    if(fit === 'cover' && w && h) return image.cover(scaleLength(w, dpi), scaleLength(h, dpi), hmode(ha) | vmode(va))
 
     if(h && w) return image.resize(scaleLength(w, dpi), scaleLength(h, dpi))
 
@@ -276,9 +261,9 @@ export default (userOptions) => {
 
   const router = new Router()
 
-  router.get('/imagecache*', express.static('public/imagecache'))
+  router.get('*', express.static(options.destination))
 
-  router.get('/imagecache*', imagecache)
+  router.get('*', imagecache)
 
   return router
 

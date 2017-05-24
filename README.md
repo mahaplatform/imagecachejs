@@ -15,7 +15,7 @@ It's easy to just add imagecache to your application
 
 ```JavaScript
 import express from 'express'
-import imagecache from './imagecache'
+import imagecache from './imagecachejs'
 
 const app = express()
 

@@ -8,13 +8,9 @@ var _slicedToArray2 = require('babel-runtime/helpers/slicedToArray');
 
 var _slicedToArray3 = _interopRequireDefault(_slicedToArray2);
 
-var _promise = require('babel-runtime/core-js/promise');
+var _bluebird = require('bluebird');
 
-var _promise2 = _interopRequireDefault(_promise);
-
-var _toConsumableArray2 = require('babel-runtime/helpers/toConsumableArray');
-
-var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
+var _bluebird2 = _interopRequireDefault(_bluebird);
 
 var _regenerator = require('babel-runtime/regenerator');
 
@@ -56,6 +52,8 @@ var _jsonHash = require('json-hash');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var request = (0, _bluebird.promisify)(_request2.default);
+
 exports.default = function (userOptions) {
 
   var options = (0, _extends3.default)({
@@ -81,7 +79,7 @@ exports.default = function (userOptions) {
 
               res.sendFile(_path);
 
-              _context.next = 10;
+              _context.next = 11;
               break;
 
             case 7:
@@ -89,9 +87,11 @@ exports.default = function (userOptions) {
               _context.t0 = _context['catch'](0);
 
 
+              console.log(_context.t0);
+
               res.status(404).send(_context.t0);
 
-            case 10:
+            case 11:
             case 'end':
               return _context.stop();
           }
@@ -106,7 +106,7 @@ exports.default = function (userOptions) {
 
   var cache = function () {
     var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(urlpath, query) {
-      var hash, cachedPath, parts, filepath, filename, url;
+      var hash, cachedPath, url;
       return _regenerator2.default.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
@@ -122,21 +122,18 @@ exports.default = function (userOptions) {
               return _context2.abrupt('return', cachedPath);
 
             case 4:
-              parts = urlpath.split('/').slice(2);
-              filepath = _path3.default.join.apply(_path3.default, (0, _toConsumableArray3.default)(parts.slice(0, parts.length - 1)));
-              filename = parts[parts.length - 1];
-              _context2.next = 9;
-              return getUrl(filepath + '/' + filename);
+              _context2.next = 6;
+              return getUrl(urlpath);
 
-            case 9:
+            case 6:
               url = _context2.sent;
-              _context2.next = 12;
+              _context2.next = 9;
               return process(url, cachedPath, query);
 
-            case 12:
+            case 9:
               return _context2.abrupt('return', cachedPath);
 
-            case 13:
+            case 10:
             case 'end':
               return _context2.stop();
           }
@@ -157,11 +154,11 @@ exports.default = function (userOptions) {
           switch (_context3.prev = _context3.next) {
             case 0:
               _context3.next = 2;
-              return _promise2.default.reduce(options.sources, function (found, host) {
+              return (0, _bluebird.reduce)(options.sources, function (found, host) {
 
                 if (found !== null) return found;
 
-                return testUrl(host + '/' + urlpath);
+                return testUrl(host + urlpath);
               }, null);
 
             case 2:
@@ -192,23 +189,28 @@ exports.default = function (userOptions) {
 
   var testUrl = function () {
     var _ref4 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4(url) {
+      var response;
       return _regenerator2.default.wrap(function _callee4$(_context4) {
         while (1) {
           switch (_context4.prev = _context4.next) {
             case 0:
-              return _context4.abrupt('return', new _promise2.default(function (resolve, reject) {
+              _context4.next = 2;
+              return request(url);
 
-                (0, _request2.default)(url, function (error, response, body) {
+            case 2:
+              response = _context4.sent;
 
-                  if (response && response.statusCode && response.statusCode == 200) {
-                    return resolve(url);
-                  }
+              if (!(response && response.statusCode && response.statusCode == 200)) {
+                _context4.next = 5;
+                break;
+              }
 
-                  resolve(null);
-                });
-              }));
+              return _context4.abrupt('return', url);
 
-            case 1:
+            case 5:
+              return _context4.abrupt('return', null);
+
+            case 6:
             case 'end':
               return _context4.stop();
           }
@@ -222,73 +224,55 @@ exports.default = function (userOptions) {
   }();
 
   var process = function () {
-    var _ref5 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee6(url, filepath, params) {
+    var _ref5 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5(url, filepath, params) {
       var data, image;
-      return _regenerator2.default.wrap(function _callee6$(_context6) {
+      return _regenerator2.default.wrap(function _callee5$(_context5) {
         while (1) {
-          switch (_context6.prev = _context6.next) {
+          switch (_context5.prev = _context5.next) {
             case 0:
-              _context6.next = 2;
+              _context5.next = 2;
               return _jimp2.default.read(url);
 
             case 2:
-              data = _context6.sent;
+              data = _context5.sent;
 
               if (!params.op) {
-                _context6.next = 9;
+                _context5.next = 9;
                 break;
               }
 
-              _context6.next = 6;
-              return _promise2.default.reduce(params.op, function () {
-                var _ref6 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5(data, op) {
-                  return _regenerator2.default.wrap(function _callee5$(_context5) {
-                    while (1) {
-                      switch (_context5.prev = _context5.next) {
-                        case 0:
-                          _context5.next = 2;
-                          return transform(data, op);
-
-                        case 2:
-                          return _context5.abrupt('return', _context5.sent);
-
-                        case 3:
-                        case 'end':
-                          return _context5.stop();
-                      }
-                    }
-                  }, _callee5, undefined);
-                }));
-
-                return function (_x11, _x12) {
-                  return _ref6.apply(this, arguments);
-                };
-              }(), data);
+              _context5.next = 6;
+              return (0, _bluebird.reduce)(params.op, function (data, op) {
+                return transform(data, op);
+              }, data);
 
             case 6:
-              _context6.t0 = _context6.sent;
-              _context6.next = 12;
+              _context5.t0 = _context5.sent;
+              _context5.next = 12;
               break;
 
             case 9:
-              _context6.next = 11;
+              _context5.next = 11;
               return transform(data, params);
 
             case 11:
-              _context6.t0 = _context6.sent;
+              _context5.t0 = _context5.sent;
 
             case 12:
-              image = _context6.t0;
-              return _context6.abrupt('return', image.write(filepath, function () {
-                return resolve(filepath);
-              }));
+              image = _context5.t0;
+              _context5.next = 15;
+              return new _bluebird2.default(function (resolve, reject) {
+                return image.write(filepath, function () {
+                  return resolve();
+                });
+              });
 
-            case 14:
+            case 15:
             case 'end':
-              return _context6.stop();
+              return _context5.stop();
           }
         }
-      }, _callee6, undefined);
+      }, _callee5, undefined);
     }));
 
     return function process(_x8, _x9, _x10) {
@@ -296,119 +280,26 @@ exports.default = function (userOptions) {
     };
   }();
 
-  var transform = function () {
-    var _ref7 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee7(image, params) {
-      return _regenerator2.default.wrap(function _callee7$(_context7) {
-        while (1) {
-          switch (_context7.prev = _context7.next) {
-            case 0:
-              if (!params.bri) {
-                _context7.next = 4;
-                break;
-              }
+  var transform = function transform(image, params) {
 
-              _context7.next = 3;
-              return brightness(image, params.bri);
+    if (params.bri) return brightness(image, params.bri);
 
-            case 3:
-              return _context7.abrupt('return', _context7.sent);
+    if (params.con) return contrast(image, params.con);
 
-            case 4:
-              if (!params.con) {
-                _context7.next = 8;
-                break;
-              }
+    if (params.flip) return flip(image, params.flip);
 
-              _context7.next = 7;
-              return contrast(image, params.con);
+    if (params.col) return colorize(image, params.col);
 
-            case 7:
-              return _context7.abrupt('return', _context7.sent);
+    if (params.blur) return blur(image, params.blur);
 
-            case 8:
-              if (!params.flip) {
-                _context7.next = 12;
-                break;
-              }
+    if (params.rot) return rotate(image, params.rot);
 
-              _context7.next = 11;
-              return flip(image, params.flip);
+    if (params.crop) return crop(image, params.crop);
 
-            case 11:
-              return _context7.abrupt('return', _context7.sent);
+    if (params.fit || params.w || params.h) return resize(image, params.fit, params.w, params.h, params.ha, params.va, params.dpi);
 
-            case 12:
-              if (!params.col) {
-                _context7.next = 16;
-                break;
-              }
-
-              _context7.next = 15;
-              return colorize(image, params.col);
-
-            case 15:
-              return _context7.abrupt('return', _context7.sent);
-
-            case 16:
-              if (!params.blur) {
-                _context7.next = 20;
-                break;
-              }
-
-              _context7.next = 19;
-              return blur(image, params.blur);
-
-            case 19:
-              return _context7.abrupt('return', _context7.sent);
-
-            case 20:
-              if (!params.rot) {
-                _context7.next = 24;
-                break;
-              }
-
-              _context7.next = 23;
-              return rotate(image, params.rot);
-
-            case 23:
-              return _context7.abrupt('return', _context7.sent);
-
-            case 24:
-              if (!params.crop) {
-                _context7.next = 28;
-                break;
-              }
-
-              _context7.next = 27;
-              return crop(image, params.crop);
-
-            case 27:
-              return _context7.abrupt('return', _context7.sent);
-
-            case 28:
-              if (!(params.fit || params.w || params.h)) {
-                _context7.next = 32;
-                break;
-              }
-
-              _context7.next = 31;
-              return resize(image, params.fit, params.w, params.h, params.ha, params.va, params.dpi);
-
-            case 31:
-              return _context7.abrupt('return', _context7.sent);
-
-            case 32:
-            case 'end':
-              return _context7.stop();
-          }
-        }
-      }, _callee7, undefined);
-    }));
-
-    return function transform(_x13, _x14) {
-      return _ref7.apply(this, arguments);
-    };
-  }();
+    return image;
+  };
 
   var brightness = function brightness(image, value) {
 
@@ -441,16 +332,11 @@ exports.default = function (userOptions) {
 
   var colorize = function colorize(image, value) {
 
-    if (value == 'greyscale') {
+    if (value == 'greyscale') return image.greyscale();
 
-      return image.greyscale();
-    } else if (value == 'sepia') {
+    if (value == 'sepia') return image.sepia();
 
-      return image.sepia();
-    } else {
-
-      return image;
-    }
+    return image;
   };
 
   var blur = function blur(image, value) {
@@ -526,50 +412,35 @@ exports.default = function (userOptions) {
     var dpi = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : 1;
 
 
-    if (fit === undefined) {
+    if (fit === 'contain' && w && h) return image.contain(scaleLength(w, dpi), scaleLength(h, dpi), hmode(ha) | vmode(va));
 
-      if (h && w) {
+    if (fit === 'cover' && w && h) return image.cover(scaleLength(w, dpi), scaleLength(h, dpi), hmode(ha) | vmode(va));
 
-        return image.resize(scaleLength(w, dpi), scaleLength(h, dpi));
-      } else if (w) {
+    if (h && w) return image.resize(scaleLength(w, dpi), scaleLength(h, dpi));
 
-        return image.resize(scaleLength(w, dpi), _jimp2.default.AUTO);
-      } else if (h) {
+    if (w) return image.resize(scaleLength(w, dpi), _jimp2.default.AUTO);
 
-        return image.resize(_jimp2.default.AUTO, scaleLength(h, dpi));
-      }
-    } else {
-
-      if (fit === 'contain' && w && h) {
-
-        return image.contain(scaleLength(w, dpi), scaleLength(h, dpi), hmode(ha) | vmode(va));
-      } else if (fit === 'cover' && w && h) {
-
-        return image.cover(scaleLength(w, dpi), scaleLength(h, dpi), hmode(ha) | vmode(va));
-      }
-    }
+    if (h) return image.resize(_jimp2.default.AUTO, scaleLength(h, dpi));
 
     return image;
   };
 
   var hmode = function hmode(value) {
-    if (value == 'left') {
-      return _jimp2.default.HORIZONTAL_ALIGN_LEFT;
-    } else if (value == 'center') {
-      return _jimp2.default.HORIZONTAL_ALIGN_CENTER;
-    } else if (value == 'right') {
-      return _jimp2.default.HORIZONTAL_ALIGN_RIGHT;
-    }
+
+    if (value == 'left') return _jimp2.default.HORIZONTAL_ALIGN_LEFT;
+
+    if (value == 'center') return _jimp2.default.HORIZONTAL_ALIGN_CENTER;
+
+    if (value == 'right') return _jimp2.default.HORIZONTAL_ALIGN_RIGHT;
   };
 
   var vmode = function vmode(value) {
-    if (value == 'top') {
-      return _jimp2.default.VERTICAL_ALIGN_TOP;
-    } else if (value == 'middle') {
-      return _jimp2.default.VERTICAL_ALIGN_MIDDLE;
-    } else if (value == 'bottom') {
-      return _jimp2.default.VERTICAL_ALIGN_BOTTOM;
-    }
+
+    if (value == 'top') return _jimp2.default.VERTICAL_ALIGN_TOP;
+
+    if (value == 'middle') return _jimp2.default.VERTICAL_ALIGN_MIDDLE;
+
+    if (value == 'bottom') return _jimp2.default.VERTICAL_ALIGN_BOTTOM;
   };
 
   var scaleLength = function scaleLength(length, dpi) {
@@ -577,11 +448,11 @@ exports.default = function (userOptions) {
     return parseInt(length) * parseFloat(dpi);
   };
 
-  var router = new _express2.default.Router();
+  var router = new _express.Router();
 
-  router.get('/imagecache*', _express2.default.static('public/imagecache'));
+  router.get('*', _express2.default.static(options.destination));
 
-  router.get('/imagecache*', imagecache);
+  router.get('*', imagecache);
 
   return router;
 };
