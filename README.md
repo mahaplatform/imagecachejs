@@ -35,17 +35,20 @@ app.listen(8080, function () {
 ```
 
 ## Generating an Image
-Once your server is up and running, you can invoke an image transformation using one of the following two syntaxes:
+Once your server is up and running, you can invoke an image transformation using
+one of the following two syntaxes:
 
-```
+```JavaScript
+# query string syntax
 http://localhost:3000/imagecache/{imagePath}?{queryString}
 
-or
-
+# pathname syntax
 http://localhost:3000/imagecache/{queryString}/{imagePath}
 ```
 
-The second syntax is something that a CDN or caching proxy can easily request and save
+The pathname syntax is usually preferable because it is something that a CDN or
+caching proxy can easily request and save using the full pathname as the cache
+key
 
 ## Brightness
 Increase or decrease the brightness
