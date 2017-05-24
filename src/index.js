@@ -2,8 +2,7 @@
 import fs from 'fs'
 import path from 'path'
 import _ from 'lodash'
-import express from 'express'
-import Promise from 'bluebird'
+import { Router } from 'express'
 import request from 'request'
 import Jimp from 'jimp'
 import { digest } from 'json-hash'
@@ -16,77 +15,61 @@ export default (userOptions) => {
     ...userOptions
   }
 
-  const imagecache = (req, res, next) => {
+  const imagecache = async (req, res, next) => {
 
-    return cache(req.path, req.query).then(path => {
+    try {
+
+      const path = await cache(req.path, req.query)
 
       res.sendFile(path)
 
-    }).catch(err => {
+    } catch(err) {
 
       res.status(404).send(err)
 
-    })
+    }
 
   }
 
-  const cache = (urlpath, query) => {
+  const cache = async (urlpath, query) => {
 
-    return new Promise((resolve, reject) => {
+    const hash = digest({ urlpath, query })
 
-      const hash = digest({ urlpath, query})
+    const cachedPath = path.resolve(options.destination, `${hash}.jpg`)
 
-      const cachedPath = path.resolve(options.destination, `${hash}.jpg`)
+    if(fs.existsSync(cachedPath)) return cachedPath
 
-      if(fs.existsSync(cachedPath)) return resolve(cachedPath)
+    const parts = urlpath.split('/').slice(2)
 
-      const parts = urlpath.split('/').slice(2)
+    const filepath = path.join(...parts.slice(0, parts.length - 1))
 
-      const filepath = path.join(...parts.slice(0, parts.length - 1))
+    const filename = parts[parts.length - 1]
 
-      const filename = parts[parts.length - 1]
+    const url = await getUrl(`${filepath}/${filename}`)
 
-      return getUrl(`${filepath}/${filename}`).then(url => {
+    await process(url, cachedPath, query)
 
-        return process(url, cachedPath, query)
-
-      }).then(() => {
-
-        return resolve(cachedPath)
-
-      }).catch(err => {
-
-        return reject(err)
-
-      })
-
-    })
+    return cachedPath
 
   }
 
-  const getUrl = (urlpath) => {
+  const getUrl = async (urlpath) => {
 
-    return new Promise((resolve, reject) => {
+    const url = await Promise.reduce(options.sources, (found, host) => {
 
-      Promise.reduce(options.sources, (found, host) => {
+      if(found !== null) return found
 
-        if(found !== null) return found
+      return testUrl(`${host}/${urlpath}`)
 
-        return testUrl(`${host}/${urlpath}`)
+    }, null)
 
-      }, null).then(url => {
+    if(!url) throw new Error('Not Found')
 
-        if(!url) return reject('Not Found')
-
-        resolve(url)
-
-      })
-
-    })
+    return url
 
   }
 
-  const testUrl = (url) => {
+  const testUrl = async (url) => {
 
     return new Promise((resolve, reject) => {
 
@@ -104,65 +87,33 @@ export default (userOptions) => {
 
   }
 
-  const process = (url, filepath, params) => {
+  const process = async (url, filepath, params) => {
 
-    return new Promise((resolve, reject) => {
+    const data = await Jimp.read(url)
 
-      Jimp.read(url).then(image => {
+    const image = (params.op) ? await Promise.reduce(params.op, async (data, op) => await transform(data, op), data) : await transform(data, params)
 
-        return (params.op) ? Promise.reduce(params.op, (image, op) => transform(image, op), image) : transform(image, params)
-
-      }).then(image => {
-
-        return image.write(filepath, () => resolve(filepath))
-
-      }).catch(err => {
-
-        console.log(err)
-
-        reject()
-
-      })
-
-    })
+    return image.write(filepath, () => resolve(filepath))
 
   }
 
-  const transform = (image, params) => {
+  const transform = async (image, params) => {
 
-    return Promise.resolve(image).then(image => {
+    if(params.bri) return await brightness(image, params.bri)
 
-      return (params.bri) ? brightness(image, params.bri) : image
+    if(params.con) return await contrast(image, params.con)
 
-    }).then(image => {
+    if(params.flip) return await flip(image, params.flip)
 
-      return (params.con) ? contrast(image, params.con) : image
+    if(params.col) return await colorize(image, params.col)
 
-    }).then(image => {
+    if(params.blur) return await blur(image, params.blur)
 
-      return (params.flip) ? flip(image, params.flip) : image
+    if(params.rot) return await rotate(image, params.rot)
 
-    }).then(image => {
+    if(params.crop) return await crop(image, params.crop)
 
-      return (params.col) ? colorize(image, params.col) : image
-
-    }).then(image => {
-
-      return (params.blur) ? blur(image, params.blur) : image
-
-    }).then(image => {
-
-      return (params.rot) ? rotate(image, params.rot) : image
-
-    }).then(image => {
-
-      return (params.crop) ? crop(image, params.crop) : image
-
-    }).then(image => {
-
-      return (params.fit || params.w || params.h) ? resize(image, params.fit, params.w, params.h, params.ha, params.va, params.dpi) : image
-
-    })
+    if(params.fit || params.w || params.h) return await resize(image, params.fit, params.w, params.h, params.ha, params.va, params.dpi)
 
   }
 
@@ -200,19 +151,11 @@ export default (userOptions) => {
 
   const colorize = (image, value) => {
 
-    if(value == 'greyscale') {
+    if(value == 'greyscale') return image.greyscale()
 
-      return image.greyscale()
+    if(value == 'sepia') return image.sepia()
 
-    } else if(value == 'sepia') {
-
-      return image.sepia()
-
-    } else {
-
-      return image
-
-    }
+    return image
 
   }
 
@@ -283,58 +226,46 @@ export default (userOptions) => {
 
   const resize = (image, fit, w, h, ha = 'center', va = 'middle', dpi = 1) => {
 
-    if(fit === undefined) {
+    if(fit === 'contain' && w && h) {
 
-      if(h && w) {
-
-        return image.resize(scaleLength(w, dpi), scaleLength(h, dpi))
-
-      } else if(w) {
-
-        return image.resize(scaleLength(w, dpi), Jimp.AUTO)
-
-      } else if(h) {
-
-        return image.resize(Jimp.AUTO, scaleLength(h, dpi))
-
-      }
-
-    } else {
-
-      if(fit === 'contain' && w && h) {
-
-        return image.contain(scaleLength(w, dpi), scaleLength(h, dpi), hmode(ha) | vmode(va))
-
-      } else if(fit === 'cover' && w && h) {
-
-        return image.cover(scaleLength(w, dpi), scaleLength(h, dpi), hmode(ha) | vmode(va))
-
-      }
+      return image.contain(scaleLength(w, dpi), scaleLength(h, dpi), hmode(ha) | vmode(va))
 
     }
+
+    if(fit === 'cover' && w && h) {
+
+      return image.cover(scaleLength(w, dpi), scaleLength(h, dpi), hmode(ha) | vmode(va))
+
+    }
+
+    if(h && w) return image.resize(scaleLength(w, dpi), scaleLength(h, dpi))
+
+    if(w) return image.resize(scaleLength(w, dpi), Jimp.AUTO)
+
+    if(h) return image.resize(Jimp.AUTO, scaleLength(h, dpi))
 
     return image
 
   }
 
   const hmode = (value) => {
-    if(value == 'left') {
-      return Jimp.HORIZONTAL_ALIGN_LEFT
-    } else if(value == 'center') {
-      return Jimp.HORIZONTAL_ALIGN_CENTER
-    } else if(value == 'right') {
-      return Jimp.HORIZONTAL_ALIGN_RIGHT
-    }
+
+    if(value == 'left')  return Jimp.HORIZONTAL_ALIGN_LEFT
+
+    if(value == 'center') return Jimp.HORIZONTAL_ALIGN_CENTER
+
+    if(value == 'right') return Jimp.HORIZONTAL_ALIGN_RIGHT
+
   }
 
   const vmode = (value) => {
-    if(value == 'top') {
-      return Jimp.VERTICAL_ALIGN_TOP
-    } else if(value == 'middle') {
-      return Jimp.VERTICAL_ALIGN_MIDDLE
-    } else if(value == 'bottom') {
-      return Jimp.VERTICAL_ALIGN_BOTTOM
-    }
+
+    if(value == 'top') return Jimp.VERTICAL_ALIGN_TOP
+
+    if(value == 'middle') return Jimp.VERTICAL_ALIGN_MIDDLE
+
+    if(value == 'bottom') return Jimp.VERTICAL_ALIGN_BOTTOM
+
   }
 
   const scaleLength = (length, dpi) => {
@@ -343,7 +274,7 @@ export default (userOptions) => {
 
   }
 
-  const router = new express.Router()
+  const router = new Router()
 
   router.get('/imagecache*', express.static('public/imagecache'))
 
