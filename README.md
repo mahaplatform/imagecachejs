@@ -41,7 +41,12 @@ Increase or decrease the brightness
     <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.png" width="300" /></td>
     <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-bri-50.png" width="300" /></td>
   </tr>
-  <tr><td colspan="2">http://localhost:3000/imagecache/images/kitten.png?bri=50</td></tr>
+  <tr>
+    <td colspan="2">
+      http://localhost:3000/imagecache/bri=50/images/kitten.png
+      http://localhost:3000/imagecache/images/kitten.png?bri=50
+    </td>
+  </tr>
 </table>
 
 <table>

@@ -8,6 +8,8 @@ import Request from 'request'
 import Jimp from 'jimp'
 import URL from 'url'
 import tinycolor from 'tinycolor2'
+import qs from 'qs'
+import url from 'url'
 import { digest } from 'json-hash'
 
 const request = Promise.promisify(Request)
@@ -15,7 +17,7 @@ const request = Promise.promisify(Request)
 export default (userOptions) => {
 
   const options = {
-    destination: 'cached',
+    destination: path.resolve('cached'),
     sources: [],
     ...userOptions
   }
@@ -24,39 +26,75 @@ export default (userOptions) => {
 
     try {
 
-      const path = await cache(req.path, req.query)
+      const [ assetPath, query ] = extractPathAndQuery(req)
 
-      res.sendFile(path)
+      const cachedPath = await cache(assetPath, query)
+
+      if(!cachedPath) return next()
+
+      res.sendFile(cachedPath)
 
     } catch(err) {
 
-      console.log(err)
-
-      res.status(404).send(err)
+      next(err)
 
     }
 
   }
 
-  const cache = async (urlpath, query) => {
+  const extractPathAndQuery = (req) => {
 
-    const hash = digest({ urlpath, query })
+    const uri = url.parse(req.originalUrl)
 
-    const filepath = urlpath.split('/').pop().split('.').pop()
+    const pathPrefix = uri.pathname.replace(req.path, '')
 
-    const format = query.fm || filepath
+    const pathname = uri.pathname.replace(pathPrefix, '')
+
+    const firstFolder = pathname.split('/')[1]
+
+    const matches = firstFolder.match(/\w*\=\w*/)
+
+    const query = matches ? qs.parse(firstFolder) : req.query
+
+    const assetPath = matches ? pathname.replace(`/${firstFolder}`, '') : pathname
+
+    return [ assetPath, query ]
+
+  }
+
+  const cache = async (assetPath, query) => {
+
+    const pathParts = assetPath.split('/')
+
+    const filename = pathParts[pathParts.length - 1]
+
+    const fileExt = filename.split('.').pop()
+
+    const format = query.fm || fileExt
 
     const ext = getFormat(format)
 
-    const cachedPath = path.resolve(options.destination, `${hash}.${ext}`)
+    const cachedPath = path.resolve(options.destination, qs.stringify(query), ...pathParts).replace(`.${fileExt}`,`.${format}`)
 
     if(fs.existsSync(cachedPath)) return cachedPath
 
-    const url = await getUrl(urlpath)
+    const originalPath = path.resolve(options.destination, 'originals', ...pathParts)
 
-    await process(url, cachedPath, query)
+    const originalExists = fs.existsSync(originalPath)
 
-    return cachedPath
+    const noQuery = _.isEmpty(query)
+
+    if(originalExists && noQuery) return originalPath
+
+    const imagePath = (originalExists) ? originalPath : await getUrl(assetPath)
+
+    if(!imagePath) return null
+
+    const destinationPath = (noQuery) ? originalPath : cachedPath
+
+    await process(imagePath, destinationPath, query)
+
+    return destinationPath
 
   }
 
@@ -80,8 +118,6 @@ export default (userOptions) => {
 
     }, null)
 
-    if(!url) throw new Error('Not Found')
-
     return url
 
   }
@@ -96,9 +132,9 @@ export default (userOptions) => {
 
   }
 
-  const process = async (url, filepath, params) => {
+  const process = async (path, filepath, params) => {
 
-    const data = await Jimp.read(url)
+    const data = await Jimp.read(path)
 
     const image = (params.op) ? await Promise.reduce(params.op, (data, op) => transform(data, op), data) : await transform(data, params)
 
@@ -398,7 +434,7 @@ export default (userOptions) => {
 
   const router = new Router()
 
-  router.get('*', express.static(options.destination))
+  router.use(express.static(options.destination))
 
   router.get('*', imagecache)
 

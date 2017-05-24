@@ -4,17 +4,21 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _slicedToArray2 = require('babel-runtime/helpers/slicedToArray');
-
-var _slicedToArray3 = _interopRequireDefault(_slicedToArray2);
-
 var _bluebird = require('bluebird');
 
 var _bluebird2 = _interopRequireDefault(_bluebird);
 
+var _toConsumableArray2 = require('babel-runtime/helpers/toConsumableArray');
+
+var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
+
 var _regenerator = require('babel-runtime/regenerator');
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _slicedToArray2 = require('babel-runtime/helpers/slicedToArray');
+
+var _slicedToArray3 = _interopRequireDefault(_slicedToArray2);
 
 var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
@@ -28,9 +32,9 @@ var _fs = require('fs');
 
 var _fs2 = _interopRequireDefault(_fs);
 
-var _path2 = require('path');
+var _path = require('path');
 
-var _path3 = _interopRequireDefault(_path2);
+var _path2 = _interopRequireDefault(_path);
 
 var _lodash = require('lodash');
 
@@ -56,6 +60,10 @@ var _tinycolor = require('tinycolor2');
 
 var _tinycolor2 = _interopRequireDefault(_tinycolor);
 
+var _qs = require('qs');
+
+var _qs2 = _interopRequireDefault(_qs);
+
 var _jsonHash = require('json-hash');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -65,46 +73,53 @@ var request = (0, _bluebird.promisify)(_request2.default);
 exports.default = function (userOptions) {
 
   var options = (0, _extends3.default)({
-    destination: 'cached',
+    destination: _path2.default.resolve('cached'),
     sources: []
   }, userOptions);
 
   var imagecache = function () {
     var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(req, res, next) {
-      var _path;
+      var _extractPathAndQuery, _extractPathAndQuery2, assetPath, query, cachedPath;
 
       return _regenerator2.default.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               _context.prev = 0;
-              _context.next = 3;
-              return cache(req.path, req.query);
+              _extractPathAndQuery = extractPathAndQuery(req), _extractPathAndQuery2 = (0, _slicedToArray3.default)(_extractPathAndQuery, 2), assetPath = _extractPathAndQuery2[0], query = _extractPathAndQuery2[1];
+              _context.next = 4;
+              return cache(assetPath, query);
 
-            case 3:
-              _path = _context.sent;
+            case 4:
+              cachedPath = _context.sent;
 
+              if (cachedPath) {
+                _context.next = 7;
+                break;
+              }
 
-              res.sendFile(_path);
-
-              _context.next = 11;
-              break;
+              return _context.abrupt('return', next());
 
             case 7:
-              _context.prev = 7;
+
+              res.sendFile(cachedPath);
+
+              _context.next = 13;
+              break;
+
+            case 10:
+              _context.prev = 10;
               _context.t0 = _context['catch'](0);
 
 
-              console.log(_context.t0);
+              next(_context.t0);
 
-              res.status(404).send(_context.t0);
-
-            case 11:
+            case 13:
             case 'end':
               return _context.stop();
           }
         }
-      }, _callee, undefined, [[0, 7]]);
+      }, _callee, undefined, [[0, 10]]);
     }));
 
     return function imagecache(_x, _x2, _x3) {
@@ -112,39 +127,94 @@ exports.default = function (userOptions) {
     };
   }();
 
+  var extractPathAndQuery = function extractPathAndQuery(req) {
+
+    var uri = _url2.default.parse(req.originalUrl);
+
+    var pathPrefix = uri.pathname.replace(req.path, '');
+
+    var pathname = uri.pathname.replace(pathPrefix, '');
+
+    var firstFolder = pathname.split('/')[1];
+
+    var matches = firstFolder.match(/\w*\=\w*/);
+
+    var query = matches ? _qs2.default.parse(firstFolder) : req.query;
+
+    var assetPath = matches ? pathname.replace('/' + firstFolder, '') : pathname;
+
+    return [assetPath, query];
+  };
+
   var cache = function () {
-    var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(urlpath, query) {
-      var hash, filepath, format, ext, cachedPath, url;
+    var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(assetPath, query) {
+      var pathParts, filename, fileExt, format, ext, cachedPath, originalPath, originalExists, noQuery, imagePath, destinationPath;
       return _regenerator2.default.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              hash = (0, _jsonHash.digest)({ urlpath: urlpath, query: query });
-              filepath = urlpath.split('/').pop().split('.').pop();
-              format = query.fm || filepath;
+              pathParts = assetPath.split('/');
+              filename = pathParts[pathParts.length - 1];
+              fileExt = filename.split('.').pop();
+              format = query.fm || fileExt;
               ext = getFormat(format);
-              cachedPath = _path3.default.resolve(options.destination, hash + '.' + ext);
+              cachedPath = _path2.default.resolve.apply(_path2.default, [options.destination, _qs2.default.stringify(query)].concat((0, _toConsumableArray3.default)(pathParts))).replace('.' + fileExt, '.' + format);
 
               if (!_fs2.default.existsSync(cachedPath)) {
-                _context2.next = 7;
+                _context2.next = 8;
                 break;
               }
 
               return _context2.abrupt('return', cachedPath);
 
-            case 7:
-              _context2.next = 9;
-              return getUrl(urlpath);
+            case 8:
+              originalPath = _path2.default.resolve.apply(_path2.default, [options.destination, 'originals'].concat((0, _toConsumableArray3.default)(pathParts)));
+              originalExists = _fs2.default.existsSync(originalPath);
+              noQuery = _lodash2.default.isEmpty(query);
 
-            case 9:
-              url = _context2.sent;
-              _context2.next = 12;
-              return process(url, cachedPath, query);
+              if (!(originalExists && noQuery)) {
+                _context2.next = 13;
+                break;
+              }
 
-            case 12:
-              return _context2.abrupt('return', cachedPath);
+              return _context2.abrupt('return', originalPath);
 
             case 13:
+              if (!originalExists) {
+                _context2.next = 17;
+                break;
+              }
+
+              _context2.t0 = originalPath;
+              _context2.next = 20;
+              break;
+
+            case 17:
+              _context2.next = 19;
+              return getUrl(assetPath);
+
+            case 19:
+              _context2.t0 = _context2.sent;
+
+            case 20:
+              imagePath = _context2.t0;
+
+              if (imagePath) {
+                _context2.next = 23;
+                break;
+              }
+
+              return _context2.abrupt('return', null);
+
+            case 23:
+              destinationPath = noQuery ? originalPath : cachedPath;
+              _context2.next = 26;
+              return process(imagePath, destinationPath, query);
+
+            case 26:
+              return _context2.abrupt('return', destinationPath);
+
+            case 27:
             case 'end':
               return _context2.stop();
           }
@@ -183,18 +253,9 @@ exports.default = function (userOptions) {
 
             case 2:
               url = _context3.sent;
-
-              if (url) {
-                _context3.next = 5;
-                break;
-              }
-
-              throw new Error('Not Found');
-
-            case 5:
               return _context3.abrupt('return', url);
 
-            case 6:
+            case 4:
             case 'end':
               return _context3.stop();
           }
@@ -244,14 +305,14 @@ exports.default = function (userOptions) {
   }();
 
   var process = function () {
-    var _ref5 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5(url, filepath, params) {
+    var _ref5 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5(path, filepath, params) {
       var data, image;
       return _regenerator2.default.wrap(function _callee5$(_context5) {
         while (1) {
           switch (_context5.prev = _context5.next) {
             case 0:
               _context5.next = 2;
-              return _jimp2.default.read(url);
+              return _jimp2.default.read(path);
 
             case 2:
               data = _context5.sent;
@@ -580,7 +641,7 @@ exports.default = function (userOptions) {
 
   var router = new _express.Router();
 
-  router.get('*', _express2.default.static(options.destination));
+  router.use(_express2.default.static(options.destination));
 
   router.get('*', imagecache);
 
