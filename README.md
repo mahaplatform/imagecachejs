@@ -36,8 +36,11 @@ app.listen(8080, function () {
 
 ## Brightness
 Increase or decrease the brightness
-<img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-bri-50.jpg" />
-http://localhost:3000/imagecache/images/apartment.jpg?bri=50
+<table>
+  <tr><td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-bri-50.jpg" /></td></tr>
+  <tr><td>http://localhost:3000/imagecache/images/apartment.jpg?bri=50</td></tr>
+</table>
+
 http://localhost:3000/imagecache/images/apartment.jpg?bri=-30
 
 ## Contrast
