@@ -38,50 +38,60 @@ app.listen(8080, function () {
 Increase or decrease the brightness
 <table>
   <tr><td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-bri-50.jpg" /></td></tr>
-  <tr><td>http://localhost:3000/imagecache/images/apartment.jpg?bri=50</td></tr>
+  <tr><td>http://localhost:3000/imagecache/images/kitten.jpg?bri=50</td></tr>
 </table>
 
-http://localhost:3000/imagecache/images/apartment.jpg?bri=-30
+<table>
+  <tr><td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-bri-30.jpg" /></td></tr>
+  <tr><td>http://localhost:3000/imagecache/images/kitten.jpg?bri=-30</td></tr>
+</table>
 
 ## Contrast
 Increase or decrease the brightness
 
-http://localhost:3000/imagecache/images/apartment.jpg?con=50
-http://localhost:3000/imagecache/images/apartment.jpg?con=-30
+<table>
+  <tr><td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-con-50.jpg" /></td></tr>
+  <tr><td>http://localhost:3000/imagecache/images/kitten.jpg?con=50</td></tr>
+</table>
+
+<table>
+  <tr><td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-con-30.jpg" /></td></tr>
+  <tr><td>http://localhost:3000/imagecache/images/kitten.jpg?con=-30</td></tr>
+</table>
 
 ## Flip
 Flip the image horizontally, vertically, or both
 
-http://localhost:3000/imagecache/images/apartment.jpg?flip=h
-http://localhost:3000/imagecache/images/apartment.jpg?flip=v
-http://localhost:3000/imagecache/images/apartment.jpg?flip=vh
+http://localhost:3000/imagecache/images/kitten.jpg?flip=h
+http://localhost:3000/imagecache/images/kitten.jpg?flip=v
+http://localhost:3000/imagecache/images/kitten.jpg?flip=vh
 
 ## Colorize
 Colorize image with a preset
 
-http://localhost:3000/imagecache/images/apartment.jpg?col=greyscale
-http://localhost:3000/imagecache/images/apartment.jpg?col=sepia
+http://localhost:3000/imagecache/images/kitten.jpg?col=greyscale
+http://localhost:3000/imagecache/images/kitten.jpg?col=sepia
 
 ## Blur
 Blur image with a radius
 
-http://localhost:3000/imagecache/images/apartment.jpg?blur=15
+http://localhost:3000/imagecache/images/kitten.jpg?blur=15
 
 ## Rotate
 Rotate image and then crop to largest possible rectangle with same aspect ratio
 
-http://localhost:3000/imagecache/images/apartment.jpg?rot=45
+http://localhost:3000/imagecache/images/kitten.jpg?rot=45
 
 ## Crop
 Crop the image using a reactangle in the format "x,y,w,h"
 
-http://localhost:3000/imagecache/images/apartment.jpg?crop=100,100,560,400
+http://localhost:3000/imagecache/images/kitten.jpg?crop=100,100,560,400
 
 
 ## Resize
 Resize the image
 
-http://localhost:3000/imagecache/images/apartment.jpg?w=500
-http://localhost:3000/imagecache/images/apartment.jpg?w=200&dpi=2
-http://localhost:3000/imagecache/images/apartment.jpg?h=250
-http://localhost:3000/imagecache/images/apartment.jpg?w=300&h=300
+http://localhost:3000/imagecache/images/kitten.jpg?w=500
+http://localhost:3000/imagecache/images/kitten.jpg?w=200&dpi=2
+http://localhost:3000/imagecache/images/kitten.jpg?h=250
+http://localhost:3000/imagecache/images/kitten.jpg?w=300&h=300
