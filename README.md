@@ -43,7 +43,7 @@ Increase or decrease the brightness
   </tr>
   <tr>
     <td colspan="2">
-      http://localhost:3000/imagecache/bri=50/images/kitten.png
+      http://localhost:3000/imagecache/bri=50/images/kitten.png<br />
       http://localhost:3000/imagecache/images/kitten.png?bri=50
     </td>
   </tr>
