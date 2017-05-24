@@ -1,9 +1,9 @@
 {
   "name": "imagecachejs",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "",
   "license": "ISC",
-  "author": "Greg Kops <greg@thinktopography.com>",
+  "author": "",
   "maintainers": [
     {
       "name": "Greg Kops",
@@ -20,8 +20,6 @@
     "url": "git+https://github.com/mahaplatform/imagecachejs.git"
   },
   "homepage": "https://github.com/mahaplatform/imagecachejs#readme",
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "bluebird": "^3.5.0",
     "express": "^4.15.2",
