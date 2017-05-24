@@ -13,6 +13,7 @@
   "dependencies": {
     "express": "^4.15.2",
     "imagecachejs": "latest",
+    "qs": "^6.4.0",
     "tinycolor2": "^1.4.1"
   },
   "devDependencies": {
