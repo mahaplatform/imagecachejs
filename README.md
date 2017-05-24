@@ -101,24 +101,54 @@ Flip the image horizontally, vertically, or both
 ## Colorize
 Colorize image with a preset
 
-http://localhost:3000/imagecache/images/kitten.jpg?col=greyscale
-http://localhost:3000/imagecache/images/kitten.jpg?col=sepia
+<table>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.jpg" width="300" /></td>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-col-greyscale.jpg" width="300" /></td>
+  </tr>
+  <tr><td colspan="2">http://localhost:3000/imagecache/images/kitten.jpg?col=greyscale</td></tr>
+</table>
+
+<table>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.jpg" width="300" /></td>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-col-sepia.jpg" width="300" /></td>
+  </tr>
+  <tr><td colspan="2">http://localhost:3000/imagecache/images/kitten.jpg?col=sepia</td></tr>
+</table>
 
 ## Blur
 Blur image with a radius
 
-http://localhost:3000/imagecache/images/kitten.jpg?blur=15
+<table>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.jpg" width="300" /></td>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-blur-15.jpg" width="300" /></td>
+  </tr>
+  <tr><td colspan="2">http://localhost:3000/imagecache/images/kitten.jpg?blur=15</td></tr>
+</table>
 
 ## Rotate
 Rotate image and then crop to largest possible rectangle with same aspect ratio
 
-http://localhost:3000/imagecache/images/kitten.jpg?rot=45
+<table>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.jpg" width="300" /></td>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-rot-45.jpg" height="200" /></td>
+  </tr>
+  <tr><td colspan="2">http://localhost:3000/imagecache/images/kitten.jpg?rot=45</td></tr>
+</table>
 
 ## Crop
 Crop the image using a reactangle in the format "x,y,w,h"
 
-http://localhost:3000/imagecache/images/kitten.jpg?crop=100,100,560,400
-
+<table>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.jpg" width="300" /></td>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-crop-100-100-400-200.jpg" width="200" /></td>
+  </tr>
+  <tr><td colspan="2">http://localhost:3000/imagecache/images/kitten.jpg?crop=100,100,400,200</td></tr>
+</table>
 
 ## Resize
 Resize the image
