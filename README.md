@@ -38,7 +38,7 @@ app.listen(8080, function () {
 Once your server is up and running, you can invoke an image transformation using
 one of the following two syntaxes:
 
-```JavaScript
+```sh
 # query string syntax
 http://localhost:3000/imagecache/{imagePath}?{queryString}
 
