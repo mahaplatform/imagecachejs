@@ -3,6 +3,13 @@
 Imagecache is a express middleware that lets you manipulate images and then
 cache them for quick retrieval.
 
+## Installation
+Install with [npm](http://npmjs.com) or [yarn](https://yarnpkg.com):
+
+```sh
+npm install --save imagecachejs
+```
+
 ## Usage
 It's easy to just add imagecache to your application
 
