@@ -178,25 +178,6 @@ Invert the colors of the image
   <tr><td colspan="2">http://localhost:3000/imagecache/invert=true/images/kitten.png</td></tr>
 </table>
 
-## Colorize
-Colorize image with a preset
-
-<table>
-  <tr>
-    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.png" width="300" /></td>
-    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-col-greyscale.png" width="300" /></td>
-  </tr>
-  <tr><td colspan="2">http://localhost:3000/imagecache/col=greyscale/images/kitten.png</td></tr>
-</table>
-
-<table>
-  <tr>
-    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.png" width="300" /></td>
-    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-col-sepia.png" width="300" /></td>
-  </tr>
-  <tr><td colspan="2">http://localhost:3000/imagecache/col=sepia/images/kitten.png</td></tr>
-</table>
-
 ## Blur
 Blur image with a radius
 
@@ -279,7 +260,7 @@ Crop the image using a reactangle in the format "x,y,w,h"
   <tr><td colspan="2">http://localhost:3000/imagecache/crop=100,100,400,200/images/kitten.png</td></tr>
 </table>
 
-## [FIT,W,H,HA,VA] Resize
+## Resize
 Resize the image
 
 http://localhost:3000/imagecache/w=500/images/kitten.png

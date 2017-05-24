@@ -150,8 +150,6 @@ export default (userOptions) => {
 
     if(params.flip) image = flip(image, params.flip)
 
-    if(params.col) image = colorize(image, params.col)
-
     if(params.blur) image = blur(image, params.blur)
 
     if(params.pad) image = padding(image, params.pad)
@@ -211,16 +209,6 @@ export default (userOptions) => {
     const vert = value.match(/v/) !== null
 
     return image.flip(horz, vert)
-
-  }
-
-  const colorize = (image, value) => {
-
-    if(value == 'greyscale') return image.greyscale()
-
-    if(value == 'sepia') return image.sepia()
-
-    return image
 
   }
 
