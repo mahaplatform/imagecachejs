@@ -63,8 +63,11 @@ Increase or decrease the brightness
 Flip the image horizontally, vertically, or both
 
 <table>
-  <tr><td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-flip-h.jpg" /></td></tr>
-  <tr><td>http://localhost:3000/imagecache/images/kitten.jpg?flip=h</td></tr>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.jpg" /></td>
+    <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten-flip-h.jpg" /></td>
+  </tr>
+  <tr><td colspan="2">http://localhost:3000/imagecache/images/kitten.jpg?flip=h</td></tr>
 </table>
 
 <table>
