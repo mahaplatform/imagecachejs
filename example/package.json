@@ -12,7 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.15.2",
-    "imagecachejs": "latest"
+    "imagecachejs": "latest",
+    "tinycolor2": "^1.4.1"
   },
   "devDependencies": {
     "babel-cli": "^6.24.0",
