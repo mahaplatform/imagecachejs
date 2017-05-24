@@ -6,6 +6,7 @@ import express from 'express'
 import { Router } from 'express'
 import Request from 'request'
 import Jimp from 'jimp'
+import URL from 'url'
 import tinycolor from 'tinycolor2'
 import { digest } from 'json-hash'
 
@@ -41,7 +42,11 @@ export default (userOptions) => {
 
     const hash = digest({ urlpath, query })
 
-    const ext = getFormat(query.fm)
+    const filepath = urlpath.split('/').pop().split('.').pop()
+
+    const format = query.fm || filepath
+
+    const ext = getFormat(format)
 
     const cachedPath = path.resolve(options.destination, `${hash}.${ext}`)
 

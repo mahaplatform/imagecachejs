@@ -48,6 +48,10 @@ var _jimp = require('jimp');
 
 var _jimp2 = _interopRequireDefault(_jimp);
 
+var _url = require('url');
+
+var _url2 = _interopRequireDefault(_url);
+
 var _tinycolor = require('tinycolor2');
 
 var _tinycolor2 = _interopRequireDefault(_tinycolor);
@@ -110,35 +114,37 @@ exports.default = function (userOptions) {
 
   var cache = function () {
     var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(urlpath, query) {
-      var hash, ext, cachedPath, url;
+      var hash, filepath, format, ext, cachedPath, url;
       return _regenerator2.default.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
               hash = (0, _jsonHash.digest)({ urlpath: urlpath, query: query });
-              ext = getFormat(query.fm);
+              filepath = urlpath.split('/').pop().split('.').pop();
+              format = query.fm || filepath;
+              ext = getFormat(format);
               cachedPath = _path3.default.resolve(options.destination, hash + '.' + ext);
 
               if (!_fs2.default.existsSync(cachedPath)) {
-                _context2.next = 5;
+                _context2.next = 7;
                 break;
               }
 
               return _context2.abrupt('return', cachedPath);
 
-            case 5:
-              _context2.next = 7;
+            case 7:
+              _context2.next = 9;
               return getUrl(urlpath);
 
-            case 7:
+            case 9:
               url = _context2.sent;
-              _context2.next = 10;
+              _context2.next = 12;
               return process(url, cachedPath, query);
 
-            case 10:
+            case 12:
               return _context2.abrupt('return', cachedPath);
 
-            case 11:
+            case 13:
             case 'end':
               return _context2.stop();
           }
@@ -404,8 +410,6 @@ exports.default = function (userOptions) {
 
   var border = function border(image, value) {
 
-    console.log(value);
-
     var matches = value.match(/(\d*),(\w*)/);
 
     if (!matches) return image;
@@ -421,8 +425,6 @@ exports.default = function (userOptions) {
     if (!color.isValid()) return image;
 
     var hex = parseInt(color.toHex8(), 16);
-
-    console.log(border, hex);
 
     var verticalBorder = new _jimp2.default(border, image.bitmap.height, hex);
 
