@@ -272,14 +272,21 @@ Crop the image using a reactangle in the format "x,y,w,h"
 ### Resize
 Resize the image
 
-http://example.com/imagecache/w=500/images/kitten.png
+<table>
+  <tr><td colspan="2">http://example.com/imagecache/w=500/images/kitten.png</td></tr>
+</table>
 
-http://example.com/imagecache/w=200&dpi=2/images/kitten.png
+<table>
+  <tr><td colspan="2">http://example.com/imagecache/w=200&dpi=2/images/kitten.png</td></tr>
+</table>
 
-http://example.com/imagecache/h=250/images/kitten.png
+<table>
+  <tr><td colspan="2">http://example.com/imagecache/h=250/images/kitten.png</td></tr>
+</table>
 
-http://example.com/imagecache/w=300&h=300/images/kitten.png
-
+<table>
+  <tr><td colspan="2">http://example.com/imagecache/w=300&h=300/images/kitten.png</td></tr>
+</table>
 
 ## Author & Credits
 
@@ -287,5 +294,5 @@ Imagecache was originally written by [Greg Kops](https://github.com/mochini) and
 is based upon his work with [Think Topography](http://thinktopography.com) and
 [The Cornell Cooperative Extension of Tompkins County](http://ccetompkins.org).
 
-Special thanks to Oliver Moran and the [Jimp](https://github.com/oliver-moran/jimp)
+Special thanks to [Oliver Moran](https://github.com/oliver-moran) and the [Jimp](https://github.com/oliver-moran/jimp)
 project for building the engine that makes Imagecache possible!
