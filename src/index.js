@@ -1,16 +1,12 @@
 
 import fs from 'fs'
 import path from 'path'
-import _ from 'lodash'
-import express from 'express'
 import { Router } from 'express'
 import Request from 'request'
 import Jimp from 'jimp'
 import URL from 'url'
 import tinycolor from 'tinycolor2'
 import qs from 'qs'
-import url from 'url'
-import { digest } from 'json-hash'
 
 const request = Promise.promisify(Request)
 
@@ -94,7 +90,7 @@ export default (userOptions) => {
 
     const transforms = qs.stringify(query)
 
-    return path.resolve(options.webRoot, pathPrefix, transforms, ...pathParts).replace(`.${fileExt}`,`.${format}`)
+    return path.resolve(options.webRoot, pathPrefix, transforms, ...pathParts).replace(`.${fileExt}`,`.${ext}`)
 
   }
 
