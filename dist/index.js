@@ -73,22 +73,22 @@ var request = (0, _bluebird.promisify)(_request2.default);
 exports.default = function (userOptions) {
 
   var options = (0, _extends3.default)({
-    destination: _path2.default.resolve('cached'),
+    webRoot: '.',
     sources: []
   }, userOptions);
 
   var imagecache = function () {
     var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(req, res, next) {
-      var _extractPathAndQuery, _extractPathAndQuery2, assetPath, query, cachedPath;
+      var _extractPathAndQuery, _extractPathAndQuery2, pathPrefix, assetPath, query, cachedPath;
 
       return _regenerator2.default.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               _context.prev = 0;
-              _extractPathAndQuery = extractPathAndQuery(req), _extractPathAndQuery2 = (0, _slicedToArray3.default)(_extractPathAndQuery, 2), assetPath = _extractPathAndQuery2[0], query = _extractPathAndQuery2[1];
+              _extractPathAndQuery = extractPathAndQuery(req), _extractPathAndQuery2 = (0, _slicedToArray3.default)(_extractPathAndQuery, 3), pathPrefix = _extractPathAndQuery2[0], assetPath = _extractPathAndQuery2[1], query = _extractPathAndQuery2[2];
               _context.next = 4;
-              return cache(assetPath, query);
+              return cache(pathPrefix, assetPath, query);
 
             case 4:
               cachedPath = _context.sent;
@@ -139,82 +139,53 @@ exports.default = function (userOptions) {
 
     var matches = firstFolder.match(/\w*\=\w*/);
 
-    var query = matches ? _qs2.default.parse(firstFolder) : req.query;
+    var query = matches ? _qs2.default.parse(firstFolder) : {};
 
     var assetPath = matches ? pathname.replace('/' + firstFolder, '') : pathname;
 
-    return [assetPath, query];
+    var destination = _path2.default.join.apply(_path2.default, (0, _toConsumableArray3.default)(pathPrefix.split('/').slice(1)));
+
+    return [destination, assetPath, query];
   };
 
   var cache = function () {
-    var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(assetPath, query) {
-      var pathParts, filename, fileExt, format, ext, cachedPath, originalPath, originalExists, noQuery, imagePath, destinationPath;
+    var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(pathPrefix, assetPath, query) {
+      var cachedPath, imagePath;
       return _regenerator2.default.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              pathParts = assetPath.split('/');
-              filename = pathParts[pathParts.length - 1];
-              fileExt = filename.split('.').pop();
-              format = query.fm || fileExt;
-              ext = getFormat(format);
-              cachedPath = _path2.default.resolve.apply(_path2.default, [options.destination, _qs2.default.stringify(query)].concat((0, _toConsumableArray3.default)(pathParts))).replace('.' + fileExt, '.' + format);
+              cachedPath = getCachedPath(pathPrefix, assetPath, query);
 
               if (!_fs2.default.existsSync(cachedPath)) {
-                _context2.next = 8;
+                _context2.next = 3;
                 break;
               }
 
               return _context2.abrupt('return', cachedPath);
 
-            case 8:
-              originalPath = _path2.default.resolve.apply(_path2.default, [options.destination, 'originals'].concat((0, _toConsumableArray3.default)(pathParts)));
-              originalExists = _fs2.default.existsSync(originalPath);
-              noQuery = _lodash2.default.isEmpty(query);
+            case 3:
+              _context2.next = 5;
+              return getPath(assetPath);
 
-              if (!(originalExists && noQuery)) {
-                _context2.next = 13;
-                break;
-              }
-
-              return _context2.abrupt('return', originalPath);
-
-            case 13:
-              if (!originalExists) {
-                _context2.next = 17;
-                break;
-              }
-
-              _context2.t0 = originalPath;
-              _context2.next = 20;
-              break;
-
-            case 17:
-              _context2.next = 19;
-              return getUrl(assetPath);
-
-            case 19:
-              _context2.t0 = _context2.sent;
-
-            case 20:
-              imagePath = _context2.t0;
+            case 5:
+              imagePath = _context2.sent;
 
               if (imagePath) {
-                _context2.next = 23;
+                _context2.next = 8;
                 break;
               }
 
               return _context2.abrupt('return', null);
 
-            case 23:
-              destinationPath = noQuery ? originalPath : cachedPath;
-              _context2.next = 26;
-              return process(imagePath, destinationPath, query);
+            case 8:
+              _context2.next = 10;
+              return process(imagePath, cachedPath, query);
 
-            case 26:
-              return _context2.abrupt('return', destinationPath);
+            case 10:
+              return _context2.abrupt('return', cachedPath);
 
-            case 27:
+            case 11:
             case 'end':
               return _context2.stop();
           }
@@ -222,10 +193,27 @@ exports.default = function (userOptions) {
       }, _callee2, undefined);
     }));
 
-    return function cache(_x4, _x5) {
+    return function cache(_x4, _x5, _x6) {
       return _ref2.apply(this, arguments);
     };
   }();
+
+  var getCachedPath = function getCachedPath(pathPrefix, assetPath, query) {
+
+    var pathParts = assetPath.split('/');
+
+    var filename = pathParts[pathParts.length - 1];
+
+    var fileExt = filename.split('.').pop();
+
+    var format = query.fm || fileExt;
+
+    var ext = getFormat(format);
+
+    var transforms = _qs2.default.stringify(query);
+
+    return _path2.default.resolve.apply(_path2.default, [options.webRoot, pathPrefix, transforms].concat((0, _toConsumableArray3.default)(pathParts))).replace('.' + fileExt, '.' + format);
+  };
 
   var getFormat = function getFormat(format) {
 
@@ -236,26 +224,30 @@ exports.default = function (userOptions) {
     return 'jpg';
   };
 
-  var getUrl = function () {
+  var getPath = function () {
     var _ref3 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(urlpath) {
-      var url;
       return _regenerator2.default.wrap(function _callee3$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
               _context3.next = 2;
-              return (0, _bluebird.reduce)(options.sources, function (found, host) {
+              return (0, _bluebird.reduce)(options.sources, function (found, source) {
 
                 if (found !== null) return found;
 
-                return testUrl(host + urlpath);
+                var fullPath = source + urlpath;
+
+                if (source.slice(0, 4) === 'http') return testUrl(fullPath);
+
+                if (_fs2.default.existsSync(fullPath)) return fullPath;
+
+                return null;
               }, null);
 
             case 2:
-              url = _context3.sent;
-              return _context3.abrupt('return', url);
+              return _context3.abrupt('return', _context3.sent);
 
-            case 4:
+            case 3:
             case 'end':
               return _context3.stop();
           }
@@ -263,7 +255,7 @@ exports.default = function (userOptions) {
       }, _callee3, undefined);
     }));
 
-    return function getUrl(_x6) {
+    return function getPath(_x7) {
       return _ref3.apply(this, arguments);
     };
   }();
@@ -299,20 +291,20 @@ exports.default = function (userOptions) {
       }, _callee4, undefined);
     }));
 
-    return function testUrl(_x7) {
+    return function testUrl(_x8) {
       return _ref4.apply(this, arguments);
     };
   }();
 
   var process = function () {
-    var _ref5 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5(path, filepath, params) {
+    var _ref5 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5(imagePath, destinationPath, params) {
       var data, image;
       return _regenerator2.default.wrap(function _callee5$(_context5) {
         while (1) {
           switch (_context5.prev = _context5.next) {
             case 0:
               _context5.next = 2;
-              return _jimp2.default.read(path);
+              return _jimp2.default.read(imagePath);
 
             case 2:
               data = _context5.sent;
@@ -343,7 +335,7 @@ exports.default = function (userOptions) {
               image = _context5.t0;
               _context5.next = 15;
               return new _bluebird2.default(function (resolve, reject) {
-                return image.write(filepath, function () {
+                return image.write(destinationPath, function () {
                   return resolve();
                 });
               });
@@ -356,7 +348,7 @@ exports.default = function (userOptions) {
       }, _callee5, undefined);
     }));
 
-    return function process(_x8, _x9, _x10) {
+    return function process(_x9, _x10, _x11) {
       return _ref5.apply(this, arguments);
     };
   }();
@@ -368,8 +360,6 @@ exports.default = function (userOptions) {
     if (params.con) image = contrast(image, params.con);
 
     if (params.flip) image = flip(image, params.flip);
-
-    if (params.col) image = colorize(image, params.col);
 
     if (params.blur) image = blur(image, params.blur);
 
@@ -384,10 +374,6 @@ exports.default = function (userOptions) {
     if (params.sat) image = saturation(image, params.sat);
 
     if (params.tint) image = tint(image, params.tint);
-
-    if (params.shade) image = shade(image, params.shade);
-
-    if (params.mix) image = mix(image, params.mix);
 
     if (params.invert) image = invert(image, params.invert);
 
@@ -427,15 +413,6 @@ exports.default = function (userOptions) {
     var vert = value.match(/v/) !== null;
 
     return image.flip(horz, vert);
-  };
-
-  var colorize = function colorize(image, value) {
-
-    if (value == 'greyscale') return image.greyscale();
-
-    if (value == 'sepia') return image.sepia();
-
-    return image;
   };
 
   var blur = function blur(image, value) {
@@ -517,16 +494,6 @@ exports.default = function (userOptions) {
   };
 
   var tint = function tint(image, value) {
-
-    return mix(image, 'white,' + value);
-  };
-
-  var shade = function shade(image, value) {
-
-    return mix(image, 'black,' + value);
-  };
-
-  var mix = function mix(image, value) {
 
     var matches = value.match(/(\w*),(\d*)/);
 
@@ -655,8 +622,6 @@ exports.default = function (userOptions) {
   };
 
   var router = new _express.Router();
-
-  router.use(_express2.default.static(options.destination));
 
   router.get('*', imagecache);
 

@@ -23,7 +23,6 @@ const app = express()
 app.use(express.static('./public'))
 
 app.use('/imagecache', imagecache({
-  destination: path.resolve('cached'),
   sources: [
     'http://localhost:8080'
   ]
@@ -36,19 +35,15 @@ app.listen(8080, function () {
 
 ## Generating an Image
 Once your server is up and running, you can invoke an image transformation using
-one of the following two syntaxes:
+one of the following syntax:
 
 ```sh
-# query string syntax
-http://localhost:3000/imagecache/{imagePath}?{queryString}
-
-# pathname syntax
 http://localhost:3000/imagecache/{queryString}/{imagePath}
 ```
 
-The pathname syntax is usually preferable because it is something that a CDN or
-caching proxy can easily request and save using the full pathname as the cache
-key
+By putting all of the image transformations in the file path rather than a query
+string, the transformed file can easily be saved to filesystem and served as
+a static asset from a web server, CDN, caching web proxy.
 
 ## Brightness
 Increase or decrease the brightness

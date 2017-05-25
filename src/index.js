@@ -17,7 +17,7 @@ const request = Promise.promisify(Request)
 export default (userOptions) => {
 
   const options = {
-    destination: path.resolve('cached'),
+    webRoot: '.',
     sources: [],
     ...userOptions
   }
@@ -26,9 +26,9 @@ export default (userOptions) => {
 
     try {
 
-      const [ assetPath, query ] = extractPathAndQuery(req)
+      const [ pathPrefix, assetPath, query ] = extractPathAndQuery(req)
 
-      const cachedPath = await cache(assetPath, query)
+      const cachedPath = await cache(pathPrefix, assetPath, query)
 
       if(!cachedPath) return next()
 
@@ -54,15 +54,33 @@ export default (userOptions) => {
 
     const matches = firstFolder.match(/\w*\=\w*/)
 
-    const query = matches ? qs.parse(firstFolder) : req.query
+    const query = matches ? qs.parse(firstFolder) : {}
 
     const assetPath = matches ? pathname.replace(`/${firstFolder}`, '') : pathname
 
-    return [ assetPath, query ]
+    const destination = path.join(...pathPrefix.split('/').slice(1))
+
+    return [ destination, assetPath, query ]
 
   }
 
-  const cache = async (assetPath, query) => {
+  const cache = async (pathPrefix, assetPath, query) => {
+
+    const cachedPath = getCachedPath(pathPrefix, assetPath, query)
+
+    if(fs.existsSync(cachedPath)) return cachedPath
+
+    const imagePath = await getPath(assetPath)
+
+    if(!imagePath) return null
+
+    await process(imagePath, cachedPath, query)
+
+    return cachedPath
+
+  }
+
+  const getCachedPath = (pathPrefix, assetPath, query) => {
 
     const pathParts = assetPath.split('/')
 
@@ -74,27 +92,9 @@ export default (userOptions) => {
 
     const ext = getFormat(format)
 
-    const cachedPath = path.resolve(options.destination, qs.stringify(query), ...pathParts).replace(`.${fileExt}`,`.${format}`)
+    const transforms = qs.stringify(query)
 
-    if(fs.existsSync(cachedPath)) return cachedPath
-
-    const originalPath = path.resolve(options.destination, 'originals', ...pathParts)
-
-    const originalExists = fs.existsSync(originalPath)
-
-    const noQuery = _.isEmpty(query)
-
-    if(originalExists && noQuery) return originalPath
-
-    const imagePath = (originalExists) ? originalPath : await getUrl(assetPath)
-
-    if(!imagePath) return null
-
-    const destinationPath = (noQuery) ? originalPath : cachedPath
-
-    await process(imagePath, destinationPath, query)
-
-    return destinationPath
+    return path.resolve(options.webRoot, pathPrefix, transforms, ...pathParts).replace(`.${fileExt}`,`.${format}`)
 
   }
 
@@ -108,17 +108,21 @@ export default (userOptions) => {
 
   }
 
-  const getUrl = async (urlpath) => {
+  const getPath = async (urlpath) => {
 
-    const url = await Promise.reduce(options.sources, (found, host) => {
+    return await Promise.reduce(options.sources, (found, source) => {
 
       if(found !== null) return found
 
-      return testUrl(host + urlpath)
+      const fullPath = source + urlpath
+
+      if(source.slice(0,4) === 'http') return testUrl(fullPath)
+
+      if(fs.existsSync(fullPath)) return fullPath
+
+      return null
 
     }, null)
-
-    return url
 
   }
 
@@ -132,13 +136,13 @@ export default (userOptions) => {
 
   }
 
-  const process = async (path, filepath, params) => {
+  const process = async (imagePath, destinationPath, params) => {
 
-    const data = await Jimp.read(path)
+    const data = await Jimp.read(imagePath)
 
     const image = (params.op) ? await Promise.reduce(params.op, (data, op) => transform(data, op), data) : await transform(data, params)
 
-    await new Promise((resolve, reject) => image.write(filepath, () => resolve()))
+    await new Promise((resolve, reject) => image.write(destinationPath, () => resolve()))
 
   }
 
@@ -419,8 +423,6 @@ export default (userOptions) => {
   }
 
   const router = new Router()
-
-  router.use(express.static(options.destination))
 
   router.get('*', imagecache)
 

@@ -1,5 +1,5 @@
 /dist
 /node_modules
 npm-debug.log
-cached/*
-!cached/.gitkeep
+public/imagecache/*
+!public/imagecache/.gitkeep
