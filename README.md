@@ -46,8 +46,8 @@ http://example.com/imagecache/bri=50&sat=30/images/kitten.png
 By putting all of the image transformations in the url file path rather than a
 query string, the transformed file can easily be saved to filesystem and
 served as a static asset from static middleware (express.static), a web server
-(nginx, apache), a content delivery network (cloudfront, akamai), or a caching
-web proxy (varnish, squid).
+(nginx, Apache), a content delivery network (Amazon CloudFront, Akamai), or a caching
+web proxy (Varnish, Squid).
 
 ## Transformation Strings
 Image transformations are invoked using a 'query string like' syntax. For
@@ -55,35 +55,35 @@ example, if you want to brighten an image, decrease the contrast, and resize
 the image to a width of 250 pixels, the transformation string would be:
 
 ```sh
-http://example.com/imagecache/bri=15&con=-10&w=250/images/kitten.png
+bri=15&con=-10&w=250
 ```
 
 These transformations, however, will not necessarily be executed in the order
 given. If the sequence is important to you, use the `op` argument:
 
 ```sh
-http://example.com/imagecache/op[0][bri]=15&op[1][con]=-10&op[2][w]=250/images/kitten.png
+op[0][bri]=15&op[1][con]=-10&op[2][w]=250
 ```
 
 ## Transformations
-There are a number of transformations available through Imagecache:
+The following transformations are available through Imagecache:
 
-* <a href="#brightness">Brightness</a>
-* <a href="#contrast">Contrast</a>
-* <a href="#hue">Hue</a>
-* <a href="#saturation">Saturation</a>
-* <a href="#tint">Tint</a>
-* <a href="#invert">Invert</a>
-* <a href="#blur">Blur</a>
-* <a href="#flip">Flip</a>
-* <a href="#rotate">Rotate</a>
-* <a href="#padding">Padding</a>
-* <a href="#border">Border</a>
-* <a href="#crop">Crop</a>
-* <a href="#resize">Resize</a>
+* <a href="#brightness">Brightness (bri)</a>
+* <a href="#contrast">Contrast (con)</a>
+* <a href="#hue">Hue (hue)</a>
+* <a href="#saturation">Saturation (sat)</a>
+* <a href="#tint">Tint (tint)</a>
+* <a href="#invert">Invert (invert)</a>
+* <a href="#blur">Blur (blur)</a>
+* <a href="#flip">Flip (flip)</a>
+* <a href="#rotate">Rotate (rot)</a>
+* <a href="#padding">Padding (pad)</a>
+* <a href="#border">Border (border)</a>
+* <a href="#crop">Crop (crop)</a>
+* <a href="#resize">Resize (fit,w,h)</a>
 
 ### Brightness
-Increase or decrease the brightness
+Increase or decrease the brightness of an image
 <table>
   <tr>
     <td><img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/kitten.png" width="300" /></td>
@@ -101,7 +101,7 @@ Increase or decrease the brightness
 </table>
 
 ### Contrast
-Increase or decrease the brightness
+Increase or decrease the contrast of an image
 
 <table>
   <tr>
@@ -158,7 +158,7 @@ Increase or decrease the saturation of an image with an amount between -100% and
 </table>
 
 ### Tint
-Tint the image with a layer of any color with a opacity value between 1% and 100%
+Tint an image with a layer of any color with a opacity value between 1% and 100%
 
 <table>
   <tr>
