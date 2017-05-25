@@ -1,4 +1,13 @@
 # Imagecache
+<a href="https://circleci.com/gh/mahaplatform/imagecachejs">
+  <img src="https://img.shields.io/circleci/project/mahaplatform/imagecachejs.svg?maxAge=600" alt="Build Status" >
+</a>
+<a href="https://codeclimate.com/github/mahaplatform/imagecachejs">
+  <img src="https://img.shields.io/codeclimate/github/mahaplatform/imagecachejs.svg?maxAge=600" alt="Code Climate" />
+</a>
+<a href="https://codeclimate.com/github/mahaplatform/imagecachejs/coverage">
+  <img src="https://img.shields.io/codeclimate/coverage/github/mahaplatform/imagecachejs.svg?maxAge=600" alt="Code Coverage" />
+</a>
 
 Imagecache is an express middleware that lets you manipulate images and then
 cache them for quick retrieval.
