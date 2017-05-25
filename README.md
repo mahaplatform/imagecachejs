@@ -43,9 +43,11 @@ the following syntax:
 http://example.com/imagecache/bri=50&sat=30/images/kitten.png
 ```
 
-By putting all of the image transformations in the file path rather than a query
-string, the transformed file can easily be saved to filesystem and served as
-a static asset from a web server, CDN, caching web proxy.
+By putting all of the image transformations in the url file path rather than a
+query string, the transformed file can easily be saved to filesystem and
+served as a static asset from static middleware (express.static), a web server
+(nginx, apache), a content delivery network (cloudfront, akamai), or a caching
+web proxy (varnish, squid).
 
 ## Transformation Strings
 Image transformations are invoked using a 'query string like' syntax. For
@@ -72,7 +74,7 @@ There are a number of transformations available through Imagecache:
 * <a href="#saturation">Saturation</a>
 * <a href="#tint">Tint</a>
 * <a href="#invert">Invert</a>
-* <a href="#blue">Blur</a>
+* <a href="#blur">Blur</a>
 * <a href="#flip">Flip</a>
 * <a href="#rotate">Rotate</a>
 * <a href="#padding">Padding</a>
