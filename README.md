@@ -1,4 +1,4 @@
-# imagecachejs
+# Imagecache
 
 Imagecache is an express middleware that lets you manipulate images and then
 cache them for quick retrieval.
@@ -40,7 +40,7 @@ the following syntax:
 
 ```sh
 # http://{hostname}/{mountPoint}/{transformationString}/{imagePath}
-http://example.com/imagecache/bri=50/images/kitten.png
+http://example.com/imagecache/bri=50&sat=30/images/kitten.png
 ```
 
 By putting all of the image transformations in the file path rather than a query
@@ -57,13 +57,30 @@ http://example.com/imagecache/bri=15&con=-10&w=250/images/kitten.png
 ```
 
 These transformations, however, will not necessarily be executed in the order
-given. If the sequence is important to you, you can use the 'operation syntax':
+given. If the sequence is important to you, use the `op` argument:
 
 ```sh
 http://example.com/imagecache/op[0][bri]=15&op[1][con]=-10&op[2][w]=250/images/kitten.png
 ```
 
-## Brightness
+## Transformations
+There are a number of transformations available through Imagecache:
+
+<a href="#brightness">Brightness</a>
+<a href="#contrast">Contrast</a>
+<a href="#hue">Hue</a>
+<a href="#saturation">Saturation</a>
+<a href="#tint">Tint</a>
+<a href="#invert">Invert</a>
+<a href="#blue">Blur</a>
+<a href="#flip">Flip</a>
+<a href="#rotate">Rotate</a>
+<a href="#padding">Padding</a>
+<a href="#border">Border</a>
+<a href="#crop">Crop</a>
+<a href="#resize">Resize</a>
+
+### Brightness
 Increase or decrease the brightness
 <table>
   <tr>
@@ -81,7 +98,7 @@ Increase or decrease the brightness
   <tr><td colspan="2">http://example.com/imagecache/bri=-50/images/kitten.png</td></tr>
 </table>
 
-## Contrast
+### Contrast
 Increase or decrease the brightness
 
 <table>
@@ -100,7 +117,7 @@ Increase or decrease the brightness
   <tr><td colspan="2">http://example.com/imagecache/con=-50/images/kitten.png</td></tr>
 </table>
 
-## Hue
+### Hue
 Rotate the hue of an image with a value between -360 and 360 degrees
 
 <table>
@@ -119,7 +136,7 @@ Rotate the hue of an image with a value between -360 and 360 degrees
   <tr><td colspan="2">http://example.com/imagecache/hue=-90/images/kitten.png</td></tr>
 </table>
 
-## Saturation
+### Saturation
 Increase or decrease the saturation of an image with an amount between -100% and 100%
 
 <table>
@@ -138,7 +155,7 @@ Increase or decrease the saturation of an image with an amount between -100% and
   <tr><td colspan="2">http://example.com/imagecache/sat=-50/images/kitten.png</td></tr>
 </table>
 
-## Tint
+### Tint
 Tint the image with a layer of any color with a opacity value between 1% and 100%
 
 <table>
@@ -157,7 +174,7 @@ Tint the image with a layer of any color with a opacity value between 1% and 100
   <tr><td colspan="2">http://example.com/imagecache/tint=blue,50/images/kitten.png</td></tr>
 </table>
 
-## Invert
+### Invert
 Invert the colors of the image
 
 <table>
@@ -168,7 +185,7 @@ Invert the colors of the image
   <tr><td colspan="2">http://example.com/imagecache/invert=true/images/kitten.png</td></tr>
 </table>
 
-## Blur
+### Blur
 Blur image with a radius
 
 <table>
@@ -179,7 +196,7 @@ Blur image with a radius
   <tr><td colspan="2">http://example.com/imagecache/blur=15/images/kitten.png</td></tr>
 </table>
 
-## Flip
+### Flip
 Flip the image horizontally, vertically, or both
 
 <table>
@@ -206,7 +223,7 @@ Flip the image horizontally, vertically, or both
   <tr><td colspan="2">http://example.com/imagecache/flip=vh/images/kitten.png</td></tr>
 </table>
 
-## Rotate
+### Rotate
 Rotate image and then crop to largest possible rectangle with same aspect ratio
 
 <table>
@@ -217,7 +234,7 @@ Rotate image and then crop to largest possible rectangle with same aspect ratio
   <tr><td colspan="2">http://example.com/imagecache/rot=45/images/kitten.png</td></tr>
 </table>
 
-## Padding
+### Padding
 Put x pixels of padding around the image
 
 <table>
@@ -228,7 +245,7 @@ Put x pixels of padding around the image
   <tr><td colspan="2">http://example.com/imagecache/pad=50/images/kitten.png</td></tr>
 </table>
 
-## Border
+### Border
 Draw an x pixel thick border around the image
 
 <table>
@@ -239,7 +256,7 @@ Draw an x pixel thick border around the image
   <tr><td colspan="2">http://example.com/imagecache/border=50,red/images/kitten.png</td></tr>
 </table>
 
-## Crop
+### Crop
 Crop the image using a reactangle in the format "x,y,w,h"
 
 <table>
@@ -250,7 +267,7 @@ Crop the image using a reactangle in the format "x,y,w,h"
   <tr><td colspan="2">http://example.com/imagecache/crop=100,100,400,200/images/kitten.png</td></tr>
 </table>
 
-## Resize
+### Resize
 Resize the image
 
 http://example.com/imagecache/w=500/images/kitten.png
