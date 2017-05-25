@@ -9,18 +9,18 @@
   <img src="https://img.shields.io/codeclimate/coverage/github/mahaplatform/imagecachejs.svg?maxAge=600" alt="Code Coverage" />
 </a>
 
-Imagecache is an express middleware that lets you manipulate images and then
-cache them for quick retrieval.
+`Express` middleware for transforming images and caching them for quick retrieval
 
-## Installation
+## Get started
 Install with [npm](http://npmjs.com) or [yarn](https://yarnpkg.com):
 
 ```sh
 npm install --save imagecachejs
 ```
 
-## Usage
-It's easy to just add imagecache to your application
+You can then use `imagecache` in your project. The constructor imagecache() will
+return an `express` router which you can mount as a subpath for your
+`express` app
 
 ```JavaScript
 import express from 'express'
