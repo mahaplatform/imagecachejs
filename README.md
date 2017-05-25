@@ -22,21 +22,16 @@ const app = express()
 // serve files in the web root statically
 app.use(express.static('./public'))
 
+// first look for the source file locally in the web root, and
+// if not found locally, then search for the source file via http,
+// finally save cached assets in the web root, so they can be served
+// statically
 app.use('/imagecache', imagecache({
-
-  // put the cached files in the web root so they can be served statically
   webRoot: 'public',
-
   sources: [
-
-    // first look for the source file locally in the wbe root
     'public',
-
-    // if not found locally, then search for the source file via url
     'http://localhost:8080'
-
   ]
-
 }))
 
 app.listen(8080, function () {
