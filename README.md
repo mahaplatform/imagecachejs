@@ -66,19 +66,19 @@ http://example.com/imagecache/op[0][bri]=15&op[1][con]=-10&op[2][w]=250/images/k
 ## Transformations
 There are a number of transformations available through Imagecache:
 
-<a href="#brightness">Brightness</a>
-<a href="#contrast">Contrast</a>
-<a href="#hue">Hue</a>
-<a href="#saturation">Saturation</a>
-<a href="#tint">Tint</a>
-<a href="#invert">Invert</a>
-<a href="#blue">Blur</a>
-<a href="#flip">Flip</a>
-<a href="#rotate">Rotate</a>
-<a href="#padding">Padding</a>
-<a href="#border">Border</a>
-<a href="#crop">Crop</a>
-<a href="#resize">Resize</a>
+* <a href="#brightness">Brightness</a>
+* <a href="#contrast">Contrast</a>
+* <a href="#hue">Hue</a>
+* <a href="#saturation">Saturation</a>
+* <a href="#tint">Tint</a>
+* <a href="#invert">Invert</a>
+* <a href="#blue">Blur</a>
+* <a href="#flip">Flip</a>
+* <a href="#rotate">Rotate</a>
+* <a href="#padding">Padding</a>
+* <a href="#border">Border</a>
+* <a href="#crop">Crop</a>
+* <a href="#resize">Resize</a>
 
 ### Brightness
 Increase or decrease the brightness
