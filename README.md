@@ -43,6 +43,26 @@ app.listen(8080, function () {
 })
 ```
 
+## Examples
+You can view our example app with the following commands:
+
+```sh
+# checkout the repository
+git clone https://github.com/mahaplatform/imagecachejs.git
+
+# change directory
+cd imagecachejs/examples
+
+# install dependencies
+npm install
+
+# build the source
+npm run build
+
+# start the server
+npm run start
+```
+
 ## Generating an Image
 Once your server is up and running, you can invoke an image transformation using
 the following syntax:
