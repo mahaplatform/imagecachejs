@@ -1,4 +1,3 @@
-import path from 'path'
 import express from 'express'
 import imagecache from 'imagecachejs'
 
@@ -10,7 +9,6 @@ app.use('/imagecache', imagecache({
   webRoot: 'public',
   sources: [
     'public',
-    'http://prod.platform.s3.amazonaws.com',
     'http://localhost:8080'
   ]
 }))
