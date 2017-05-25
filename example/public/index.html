@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" media="all" href="/css/styles.css">
+    <title>Image Cache</title>
+  </head>
+  <body>
+
+    <h2>Brightness</h2>
+    <p>Increase or decrease the brightness of an image</p>
+
+    <table>
+      <tr>
+        <td><img src="http://localhost:8080/images/kitten.png" /></td>
+        <td><img src="http://localhost:8080/imagecache/bri=50/images/kitten.png" /></td>
+      </tr>
+      <tr><td colspan="2">http://localhost:8080/imagecache/bri=50/images/kitten.png</td></tr>
+    </table>
+
+    <table>
+      <tr>
+        <td><img src="http://localhost:8080/images/kitten.png" /></td>
+        <td><img src="http://localhost:8080/imagecache/bri=-50/images/kitten.png" /></td>
+      </tr>
+      <tr><td colspan="2">http://localhost:8080/imagecache/bri=-50/images/kitten.png</td></tr>
+    </table>
+
+    <h2>Contrast</h2>
+    <p>Increase or decrease the contrast of an image</p>
+
+    <table>
+      <tr>
+        <td><img src="http://localhost:8080/images/kitten.png" /></td>
+        <td><img src="http://localhost:8080/imagecache/con=50/images/kitten.png" /></td>
+      </tr>
+      <tr><td colspan="2">http://localhost:8080/imagecache/con=50/images/kitten.png</td></tr>
+    </table>
+
+    <table>
+      <tr>
+        <td><img src="http://localhost:8080/images/kitten.png" /></td>
+        <td><img src="http://localhost:8080/imagecache/con=-50/images/kitten.png" /></td>
+      </tr>
+      <tr><td colspan="2">http://localhost:8080/imagecache/con=-50/images/kitten.png</td></tr>
+    </table>
+
+
+    <h2>Hue</h2>
+    <p>Rotate the hue of an image with a value between -360 and 360 degrees</p>
+
+    <table>
+      <tr>
+        <td><img src="http://localhost:8080/images/kitten.png" /></td>
+        <td><img src="http://localhost:8080/imagecache/hue=-90/images/kitten.png" /></td>
+      </tr>
+      <tr><td colspan="2">http://localhost:8080/imagecache/hue=90/images/kitten.png</td></tr>
+    </table>
+
+    <table>
+      <tr>
+        <td><img src="http://localhost:8080/images/kitten.png" /></td>
+        <td><img src="http://localhost:8080/imagecache/hue=-90/images/kitten.png" /></td>
+      </tr>
+      <tr><td colspan="2">http://localhost:8080/imagecache/hue=-90/images/kitten.png</td></tr>
+    </table>
+
+    <h2>Saturation</h2>
+    <p>Increase or decrease the saturation of an image with an amount between -100% and 100%</p>
+
+    <table>
+      <tr>
+        <td><img src="http://localhost:8080/images/kitten.png" /></td>
+        <td><img src="http://localhost:8080/imagecache/sat=50/images/kitten.png" /></td>
+      </tr>
+      <tr><td colspan="2">http://localhost:8080/imagecache/sat=50/images/kitten.png</td></tr>
+    </table>
+
+    <table>
+      <tr>
+        <td><img src="http://localhost:8080/images/kitten.png" /></td>
+        <td><img src="http://localhost:8080/imagecache/sat=-50/images/kitten.png" /></td>
+      </tr>
+      <tr><td colspan="2">http://localhost:8080/imagecache/sat=-50/images/kitten.png</td></tr>
+    </table>
+
+    <h2>Tint</h2>
+    <p>Tint an image with a layer of any color with a opacity value between 1% and 100%</p>
+
+    <table>
+      <tr>
+        <td><img src="http://localhost:8080/images/kitten.png" /></td>
+        <td><img src="http://localhost:8080/imagecache/tint=red,50/images/kitten.png" /></td>
+      </tr>
+      <tr><td colspan="2">http://localhost:8080/imagecache/tint=red,50/images/kitten.png</td></tr>
+    </table>
+
+    <table>
+      <tr>
+        <td><img src="http://localhost:8080/images/kitten.png" /></td>
+        <td><img src="http://localhost:8080/imagecache/tint=blue,50/images/kitten.png" /></td>
+      </tr>
+      <tr><td colspan="2">http://localhost:8080/imagecache/tint=blue,50/images/kitten.png</td></tr>
+    </table>
+
+    <h2>Invert</h2>
+    <p>Invert the colors of the image</p>
+
+    <table>
+      <tr>
+        <td><img src="http://localhost:8080/images/kitten.png" /></td>
+        <td><img src="http://localhost:8080/imagecache/invert=true/images/kitten.png" /></td>
+      </tr>
+      <tr><td colspan="2">http://localhost:8080/imagecache/invert=true/images/kitten.png</td></tr>
+    </table>
+
+    <h2>Blur</h2>
+    <p>Blur image with a radius</p>
+
+    <table>
+      <tr>
+        <td><img src="http://localhost:8080/images/kitten.png" /></td>
+        <td><img src="http://localhost:8080/imagecache/blur=15/images/kitten.png" /></td>
+      </tr>
+      <tr><td colspan="2">http://localhost:8080/imagecache/blur=15/images/kitten.png</td></tr>
+    </table>
+
+    <h2>Flip</h2>
+    <p>Flip the image horizontally, vertically, or both</p>
+
+    <table>
+      <tr>
+        <td><img src="http://localhost:8080/images/kitten.png" /></td>
+        <td><img src="http://localhost:8080/imagecache/flip=h/images/kitten.png" /></td>
+      </tr>
+      <tr><td colspan="2">http://localhost:8080/imagecache/flip=h/images/kitten.png</td></tr>
+    </table>
+
+    <table>
+      <tr>
+        <td><img src="http://localhost:8080/images/kitten.png" /></td>
+        <td><img src="http://localhost:8080/imagecache/flip=v/images/kitten.png" /></td>
+      </tr>
+      <tr><td colspan="2">http://localhost:8080/imagecache/flip=v/images/kitten.png</td></tr>
+    </table>
+
+    <table>
+      <tr>
+        <td><img src="http://localhost:8080/images/kitten.png" /></td>
+        <td><img src="http://localhost:8080/imagecache/flip=vh/images/kitten.png" /></td>
+      </tr>
+      <tr><td colspan="2">http://localhost:8080/imagecache/flip=vh/images/kitten.png</td></tr>
+    </table>
+
+    <h2>Rotate</h2>
+    <p>Rotate image and then crop to largest possible rectangle with same aspect ratio</p>
+
+    <table>
+      <tr>
+        <td><img src="http://localhost:8080/images/kitten.png" /></td>
+        <td><img src="http://localhost:8080/imagecache/rot=45/images/kitten.png" /></td>
+      </tr>
+      <tr><td colspan="2">http://localhost:8080/imagecache/rot=45/images/kitten.png</td></tr>
+    </table>
+
+    <h2>Padding</h2>
+    <p>Put x pixels of padding around the image</p>
+
+    <table>
+      <tr>
+        <td><img src="http://localhost:8080/images/kitten.png" /></td>
+        <td><img src="http://localhost:8080/imagecache/pad=50/images/kitten.png" /></td>
+      </tr>
+      <tr><td colspan="2">http://localhost:8080/imagecache/pad=50/images/kitten.png</td></tr>
+    </table>
+
+    <h2>Border</h2>
+    <p>Draw an x pixel thick border around the image</p>
+
+    <table>
+      <tr>
+        <td><img src="http://localhost:8080/images/kitten.png" /></td>
+        <td><img src="http://localhost:8080/imagecache/border=50,red/images/kitten.png" /></td>
+      </tr>
+      <tr><td colspan="2">http://localhost:8080/imagecache/border=50,red/images/kitten.png</td></tr>
+    </table>
+
+     <h2>Crop</h2>
+    <p>Crop the image using a reactangle in the format "x,y,w,h"</p>
+
+    <table>
+      <tr>
+        <td><img src="http://localhost:8080/images/kitten.png" /></td>
+        <td><img src="http://localhost:8080/imagecache/crop=100,100,800,467/images/kitten.png" /></td>
+      </tr>
+      <tr><td colspan="2">http://localhost:8080/imagecache/crop=100,100,800,467/images/kitten.png</td></tr>
+    </table>
+
+    <h2>Resize</h2>
+    <p>Resize the image</p>
+
+    <table>
+      <tr><td colspan="2">http://localhost:8080/imagecache/w=500/images/kitten.png</td></tr>
+    </table>
+
+    <table>
+      <tr><td colspan="2">http://localhost:8080/imagecache/w=200&dpi=2/images/kitten.png</td></tr>
+    </table>
+
+    <table>
+      <tr><td colspan="2">http://localhost:8080/imagecache/h=250/images/kitten.png</td></tr>
+    </table>
+
+    <table>
+      <tr><td colspan="2">http://localhost:8080/imagecache/w=300&h=300/images/kitten.png</td></tr>
+    </table>
+
+  </body>
+</html>
