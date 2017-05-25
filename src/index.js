@@ -4,7 +4,7 @@ import path from 'path'
 import { Router } from 'express'
 import Request from 'request'
 import Jimp from 'jimp'
-import URL from 'url'
+import url from 'url'
 import tinycolor from 'tinycolor2'
 import qs from 'qs'
 
