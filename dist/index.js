@@ -273,17 +273,21 @@ exports.default = function (userOptions) {
             case 2:
               response = _context4.sent;
 
+
+              console.log(url);
+              console.log(response.statusCode);
+
               if (!(response && response.statusCode && response.statusCode == 200)) {
-                _context4.next = 5;
+                _context4.next = 7;
                 break;
               }
 
               return _context4.abrupt('return', url);
 
-            case 5:
+            case 7:
               return _context4.abrupt('return', null);
 
-            case 6:
+            case 8:
             case 'end':
               return _context4.stop();
           }
