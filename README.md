@@ -1,4 +1,4 @@
-# Imagecachejs
+<img src="https://raw.githubusercontent.com/mahaplatform/imagecachejs/master/docs/logo.png" title="Imagecache" alt="Imagecache" />
 
 <a href="https://circleci.com/gh/mahaplatform/imagecachejs">
   <img src="https://img.shields.io/circleci/project/mahaplatform/imagecachejs.svg?maxAge=600" alt="Build Status" >
