@@ -36,13 +36,7 @@ var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
 
-var _lodash = require('lodash');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
 var _express = require('express');
-
-var _express2 = _interopRequireDefault(_express);
 
 var _request = require('request');
 
@@ -63,8 +57,6 @@ var _tinycolor2 = _interopRequireDefault(_tinycolor);
 var _qs = require('qs');
 
 var _qs2 = _interopRequireDefault(_qs);
-
-var _jsonHash = require('json-hash');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -212,7 +204,7 @@ exports.default = function (userOptions) {
 
     var transforms = _qs2.default.stringify(query);
 
-    return _path2.default.resolve.apply(_path2.default, [options.webRoot, pathPrefix, transforms].concat((0, _toConsumableArray3.default)(pathParts))).replace('.' + fileExt, '.' + format);
+    return _path2.default.resolve.apply(_path2.default, [options.webRoot, pathPrefix, transforms].concat((0, _toConsumableArray3.default)(pathParts))).replace('.' + fileExt, '.' + ext);
   };
 
   var getFormat = function getFormat(format) {
@@ -273,21 +265,17 @@ exports.default = function (userOptions) {
             case 2:
               response = _context4.sent;
 
-
-              console.log(url);
-              console.log(response.statusCode);
-
               if (!(response && response.statusCode && response.statusCode == 200)) {
-                _context4.next = 7;
+                _context4.next = 5;
                 break;
               }
 
               return _context4.abrupt('return', url);
 
-            case 7:
+            case 5:
               return _context4.abrupt('return', null);
 
-            case 8:
+            case 6:
             case 'end':
               return _context4.stop();
           }
