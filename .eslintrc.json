@@ -10,14 +10,10 @@
   "parserOptions": {
     "ecmaVersion": 6,
     "ecmaFeatures": {
-      "experimentalObjectRestSpread": true,
-      "jsx": true
+      "experimentalObjectRestSpread": true
     },
     "sourceType": "module"
   },
-  "plugins": [
-    "react"
-  ],
   "globals": {
     "__dirname": true,
     "process": true,
@@ -51,8 +47,6 @@
       "error",
       "single"
     ],
-    "react/jsx-uses-react":  "error",
-    "react/jsx-uses-vars":  "error",
     "semi": [
       "error",
       "never"
