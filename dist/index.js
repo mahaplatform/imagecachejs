@@ -325,14 +325,18 @@ exports.default = function (userOptions) {
 
             case 12:
               image = _context5.t0;
-              _context5.next = 15;
+
+
+              if (params.q) image.quality(parseInt(params.q));
+
+              _context5.next = 16;
               return new _bluebird2.default(function (resolve, reject) {
                 return image.write(destinationPath, function () {
                   return resolve();
                 });
               });
 
-            case 15:
+            case 16:
             case 'end':
               return _context5.stop();
           }

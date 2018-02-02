@@ -136,6 +136,8 @@ export default (userOptions) => {
     const data = await Jimp.read(imagePath)
 
     const image = (params.op) ? await Promise.reduce(params.op, (data, op) => transform(data, op), data) : await transform(data, params)
+    
+    if(params.q) image.quality(parseInt(params.q))
 
     await new Promise((resolve, reject) => image.write(destinationPath, () => resolve()))
 
